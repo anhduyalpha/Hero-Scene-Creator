@@ -37,6 +37,14 @@ const scenes = [
     gem:   { x: '30vw',  y: '68vh' },
     aurora: 'radial-gradient(ellipse 70% 55% at 55% 25%, rgba(217,119,6,0.18) 0%, transparent 65%), radial-gradient(ellipse 40% 45% at 10% 70%, rgba(234,88,12,0.14) 0%, transparent 60%)',
   },
+  /* ── Scene 6: Case study spotlight ── */
+  {
+    orb1:  { x: '58vw',  y: '12vh',  scale: 0.78, opacity: 0.55 },
+    orb2:  { x: '-12vw', y: '42vh',  scale: 1.18, opacity: 0.48 },
+    ring:  { x: '38vw',  y: '64vh',  rotateZ: 290 },
+    gem:   { x: '86vw',  y: '24vh' },
+    aurora: 'radial-gradient(ellipse 55% 60% at 72% 38%, rgba(251,191,36,0.14) 0%, transparent 62%), radial-gradient(ellipse 45% 40% at 18% 72%, rgba(234,88,12,0.18) 0%, transparent 58%)',
+  },
 ];
 
 /* Floating particles */
