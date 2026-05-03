@@ -11,7 +11,7 @@ export default function NotFound() {
           href="/"
           className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground font-mono text-sm rounded-lg hover:bg-primary/90 transition-colors"
         >
-          ← Back to Portfolio
+          ← Back to Ultimate Portfolio
         </Link>
       </div>
     </div>
