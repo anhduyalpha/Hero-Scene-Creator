@@ -6,21 +6,23 @@ import { Scene2 } from './video_scenes/Scene2';
 import { Scene3 } from './video_scenes/Scene3';
 import { Scene4 } from './video_scenes/Scene4';
 import { Scene5 } from './video_scenes/Scene5';
+import { Scene6 } from './video_scenes/Scene6';
 import { useEffect } from 'react';
 import { SCENE_DURATIONS } from './sceneDurations';
 
 const SCENE_COMPONENTS: Record<string, React.ComponentType> = {
-  open:   Scene1,
-  warmth: Scene2,
-  depth:  Scene3,
-  impact: Scene4,
-  close:  Scene5,
+  open:      Scene1,
+  warmth:    Scene2,
+  depth:     Scene3,
+  impact:    Scene4,
+  close:     Scene5,
+  spotlight: Scene6,
 };
 
 /* Accent sweep lines — transform-only, no layout props animated */
 const sweeps = [
-  { top: '28%', widths: ['38%','28%','48%','65%','38%'], lefts: ['2%','7%','58%','18%','2%'] },
-  { top: '66%', widths: ['22%','42%','18%','32%','22%'], rights: ['12%','18%','6%','28%','12%'] },
+  { top: '28%', widths: ['38%','28%','48%','65%','38%','52%'], lefts: ['2%','7%','58%','18%','2%','12%'] },
+  { top: '66%', widths: ['22%','42%','18%','32%','22%','36%'], rights: ['12%','18%','6%','28%','12%','20%'] },
 ];
 
 export default function VideoTemplate({
