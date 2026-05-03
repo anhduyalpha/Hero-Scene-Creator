@@ -1,113 +1,150 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
+
+const EASE_OUT = [0.16, 1, 0.3, 1] as const;
+const SPRING = { type: 'spring', stiffness: 300, damping: 26 } as const;
+
+const socials = [
+  { name: 'GitHub',   color: '#fffbeb' },
+  { name: 'Dribbble', color: '#ea4c89' },
+  { name: 'LinkedIn', color: '#0a66c2' },
+  { name: 'Twitter',  color: '#1d9bf0' },
+];
 
 export function Scene5() {
   const [phase, setPhase] = useState(0);
+  const shouldReduce = useReducedMotion();
 
   useEffect(() => {
-    const timers = [
-      setTimeout(() => setPhase(1), 300),
-      setTimeout(() => setPhase(2), 1000),
-      setTimeout(() => setPhase(3), 1800),
-    ];
-    return () => timers.forEach(t => clearTimeout(t));
+    const t1 = setTimeout(() => setPhase(1), 200);
+    const t2 = setTimeout(() => setPhase(2), 950);
+    const t3 = setTimeout(() => setPhase(3), 1750);
+    return () => [t1, t2, t3].forEach(clearTimeout);
   }, []);
 
   return (
     <motion.div
       className="absolute inset-0 flex items-center justify-center"
-      initial={{ opacity: 1 }}
+      initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.15 }}
+      transition={{ duration: 0.12 }}
+      role="region"
+      aria-label="Contact"
     >
-      <div className="text-center px-12">
+      <div className="text-center" style={{ maxWidth: '68vw' }}>
+
+        {/* ── Pre-heading label ── */}
         <motion.p
-          className="font-mono tracking-[0.4em] uppercase mb-6 text-[1.2vw]"
+          className="text-label text-[0.72rem] mb-6"
           style={{ color: '#d97706' }}
-          initial={{ opacity: 0 }}
-          animate={phase >= 1 ? { opacity: 1 } : { opacity: 0 }}
-          transition={{ duration: 0.7 }}
+          initial={{ opacity: 0, y: 10 }}
+          animate={phase >= 1 ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+          transition={{ duration: 0.5, ease: EASE_OUT }}
         >
-          Let's build something great
+          ✦ Let's build something great together
         </motion.p>
 
-        <motion.div
-          className="font-display font-black tracking-tight leading-none mb-4"
-          style={{ fontSize: '8.5vw' }}
-        >
-          {"LET'S".split('').map((char, i) => (
-            <motion.span
-              key={`l-${i}`}
-              style={{ display: 'inline-block', color: '#fffbeb' }}
-              initial={{ opacity: 0, y: '1em', rotateX: -60 }}
-              animate={phase >= 1 ? { opacity: 1, y: 0, rotateX: 0 } : { opacity: 0, y: '1em', rotateX: -60 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 24, delay: phase >= 1 ? i * 0.06 : 0 }}
-            >
-              {char === ' ' ? '\u00a0' : char}
-            </motion.span>
+        {/* ── Main headline — character spring entrance ── */}
+        <h2 className="text-display mb-10" style={{ fontSize: 'clamp(3rem, 8.5vw, 9rem)' }} aria-label="Let's Connect">
+          {["LET'S", 'CONNECT'].map((word, wi) => (
+            <div key={word} className="overflow-hidden leading-[0.9]" aria-hidden>
+              {word.split('').map((char, ci) => (
+                <motion.span
+                  key={`${wi}-${ci}`}
+                  style={{
+                    display: 'inline-block',
+                    color: wi === 1
+                      ? `hsl(${30 + ci * 8}, 90%, ${55 + ci * 3}%)`
+                      : '#fffbeb',
+                  }}
+                  initial={{ y: '110%', opacity: 0 }}
+                  animate={phase >= 1 ? { y: 0, opacity: 1 } : { y: '110%', opacity: 0 }}
+                  transition={{ ...SPRING, delay: phase >= 1 ? (wi * word.length + ci) * 0.036 : 0 }}
+                >
+                  {char === ' ' ? '\u00a0' : char}
+                </motion.span>
+              ))}
+            </div>
           ))}
-        </motion.div>
+        </h2>
 
+        {/* ── Glass email card ── */}
         <motion.div
-          className="font-display font-black tracking-tight leading-none mb-12"
-          style={{ fontSize: '8.5vw' }}
+          className="glass-warm rounded-2xl inline-flex items-center gap-5 mb-9 relative overflow-hidden shimmer"
+          style={{ padding: '1.2vw 2.4vw' }}
+          initial={{ opacity: 0, scale: 0.94, y: 16 }}
+          animate={phase >= 2 ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.94, y: 16 }}
+          transition={{ duration: 0.6, ease: EASE_OUT }}
         >
-          {'CONNECT'.split('').map((char, i) => (
-            <motion.span
-              key={`c-${i}`}
-              style={{
-                display: 'inline-block',
-                color: i % 2 === 0 ? '#ea580c' : '#fbbf24',
-              }}
-              initial={{ opacity: 0, y: '1em', rotateX: -60 }}
-              animate={phase >= 1 ? { opacity: 1, y: 0, rotateX: 0 } : { opacity: 0, y: '1em', rotateX: -60 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 24, delay: phase >= 1 ? (i + 6) * 0.06 : 0 }}
-            >
-              {char}
-            </motion.span>
-          ))}
-        </motion.div>
+          {/* Pulse icon */}
+          <div className="relative shrink-0">
+            <motion.div
+              className="rounded-full"
+              style={{ width: '0.8vw', height: '0.8vw', background: '#ea580c' }}
+              animate={shouldReduce ? {} : { scale: [1, 2, 1], opacity: [1, 0, 1] }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+            />
+            <motion.div
+              className="rounded-full absolute inset-0"
+              style={{ border: '1px solid #ea580c', opacity: 0 }}
+              animate={shouldReduce ? {} : { scale: [1, 2.5], opacity: [0.6, 0] }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeOut' }}
+            />
+          </div>
 
-        <motion.div
-          className="flex justify-center items-center gap-8 mb-10"
-          initial={{ opacity: 0, y: 16 }}
-          animate={phase >= 2 ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
-          transition={{ duration: 0.8 }}
-        >
-          <div
-            className="h-px flex-1"
-            style={{ maxWidth: '8vw', background: 'linear-gradient(90deg, transparent, #ea580c)' }}
-          />
-          <span className="font-mono text-[1.3vw] tracking-widest" style={{ color: '#fde68a' }}>
+          <span
+            className="font-mono tracking-wider"
+            style={{ fontSize: 'clamp(0.85rem, 1.25vw, 1.2rem)', color: '#fde68a', letterSpacing: '0.05em' }}
+          >
             hello@yourportfolio.com
           </span>
-          <div
-            className="h-px flex-1"
-            style={{ maxWidth: '8vw', background: 'linear-gradient(90deg, #ea580c, transparent)' }}
-          />
+
+          {/* Divider */}
+          <div className="self-stretch w-px" style={{ background: 'rgba(234,88,12,0.3)' }} />
+
+          <span className="text-label text-[0.62rem]" style={{ color: '#d97706' }}>
+            Open to opportunities
+          </span>
         </motion.div>
 
+        {/* ── Decorative divider ── */}
         <motion.div
-          className="flex justify-center gap-5"
+          className="flex items-center justify-center gap-4 mb-7"
+          initial={{ opacity: 0 }}
+          animate={phase >= 2 ? { opacity: 1 } : { opacity: 0 }}
+          transition={{ duration: 0.5, delay: 0.15 }}
+        >
+          <div className="h-px flex-1" style={{ maxWidth: '9vw', background: 'linear-gradient(90deg, transparent, rgba(217,119,6,0.5))' }} />
+          <span className="font-mono text-[0.65rem] tracking-widest" style={{ color: '#78350f' }}>FIND ME ON</span>
+          <div className="h-px flex-1" style={{ maxWidth: '9vw', background: 'linear-gradient(90deg, rgba(217,119,6,0.5), transparent)' }} />
+        </motion.div>
+
+        {/* ── Social pills ── */}
+        <motion.div
+          className="flex justify-center flex-wrap gap-3"
           initial={{ opacity: 0 }}
           animate={phase >= 3 ? { opacity: 1 } : { opacity: 0 }}
-          transition={{ duration: 0.7 }}
+          transition={{ duration: 0.4 }}
+          role="list"
+          aria-label="Social profiles"
         >
-          {['GitHub', 'Dribbble', 'LinkedIn', 'Twitter'].map((net, i) => (
+          {socials.map((s, i) => (
             <motion.span
-              key={net}
-              className="px-5 py-2.5 rounded-full font-mono text-[1vw] tracking-widest"
+              key={s.name}
+              role="listitem"
+              className="glass rounded-full font-mono tracking-widest uppercase"
               style={{
-                border: '1px solid rgba(234,88,12,0.35)',
+                fontSize: '0.7rem',
+                padding: '0.6vw 1.4vw',
                 color: '#fbbf24',
-                background: 'rgba(234,88,12,0.07)',
+                borderColor: `${s.color}30`,
               }}
-              initial={{ opacity: 0, scale: 0.85 }}
-              animate={phase >= 3 ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.85 }}
-              transition={{ type: 'spring', stiffness: 320, damping: 20, delay: phase >= 3 ? i * 0.1 : 0 }}
+              initial={{ opacity: 0, scale: 0.82, y: 10 }}
+              animate={phase >= 3 ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.82, y: 10 }}
+              transition={{ ...SPRING, delay: phase >= 3 ? i * 0.09 : 0 }}
             >
-              {net}
+              {s.name}
             </motion.span>
           ))}
         </motion.div>

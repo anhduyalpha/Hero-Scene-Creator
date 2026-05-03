@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ChevronDown, ChevronUp, Repeat } from 'lucide-react';
-import VideoTemplate, { SCENE_DURATIONS } from './VideoTemplate';
+import VideoTemplate from './VideoTemplate';
+import { SCENE_DURATIONS } from './sceneDurations';
 import { useSceneControls } from './useSceneControls';
 
 const PROGRESS_TICK_MS = 60;
