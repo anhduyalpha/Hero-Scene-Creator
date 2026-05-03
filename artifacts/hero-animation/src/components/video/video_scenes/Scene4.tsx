@@ -132,6 +132,21 @@ export function Scene4() {
           </motion.p>
         </div>
 
+        {/* ── Ambient drift — keeps per-frame pixels changing after counters settle ── */}
+        <motion.div
+          className="absolute pointer-events-none rounded-full"
+          style={{
+            width: '22vw',
+            height: '22vw',
+            background: 'radial-gradient(circle, rgba(234,88,12,0.09) 0%, transparent 70%)',
+            right: '-6vw',
+            bottom: '-4vw',
+          }}
+          initial={{ scale: 0.85, opacity: 0 }}
+          animate={phase >= 2 ? { scale: [0.85, 1.2, 0.85], opacity: [0.5, 1, 0.5] } : { scale: 0.85, opacity: 0 }}
+          transition={{ duration: 3.8, repeat: Infinity, ease: 'easeInOut' }}
+        />
+
         {/* ── Bento grid: 2×2 stats + services column ── */}
         <div className="grid" style={{ gridTemplateColumns: '1fr 1fr 1fr 1fr 1.4fr', gap: '0.8vw' }}>
           {stats.map((s, i) => (

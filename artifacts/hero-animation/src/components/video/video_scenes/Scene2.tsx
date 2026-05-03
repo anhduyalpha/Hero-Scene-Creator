@@ -169,6 +169,34 @@ export function Scene2() {
             </motion.span>
           ))}
         </motion.div>
+
+        {/* ── Ambient pulse — keeps per-frame pixels changing through the scene tail ── */}
+        <motion.div
+          className="absolute pointer-events-none rounded-full"
+          style={{
+            right: '-4vw',
+            top: '10%',
+            width: '18vw',
+            height: '18vw',
+            background: 'radial-gradient(circle, rgba(217,119,6,0.12) 0%, transparent 70%)',
+          }}
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={phase >= 2 ? { scale: [0.9, 1.15, 0.9], opacity: [0.6, 1, 0.6] } : { scale: 0.9, opacity: 0 }}
+          transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
+        />
+        {/* Scanning line — sweeps vertically to add continuous motion */}
+        <motion.div
+          className="absolute pointer-events-none"
+          style={{
+            left: 0,
+            width: '100%',
+            height: 1,
+            background: 'linear-gradient(90deg, transparent, rgba(251,191,36,0.18), transparent)',
+          }}
+          initial={{ top: '0%', opacity: 0 }}
+          animate={phase >= 3 ? { top: ['10%', '90%', '10%'], opacity: [0, 0.8, 0] } : { top: '0%', opacity: 0 }}
+          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+        />
       </div>
     </motion.div>
   );

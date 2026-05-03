@@ -78,6 +78,7 @@ export function Background3D({ currentScene }: { currentScene: number }) {
       {/* ── Aurora / scene-specific glow ── */}
       <motion.div
         className="absolute inset-0"
+        initial={{ background: scenes[0].aurora }}
         animate={{ background: cfg.aurora }}
         transition={{ duration: 2.4, ease: 'easeInOut' }}
       />
