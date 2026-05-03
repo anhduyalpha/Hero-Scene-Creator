@@ -10,19 +10,28 @@ export function Contact() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
-    // Simulate API call
+
+    const form = e.target as HTMLFormElement;
+    const data = new FormData(form);
+    const name = data.get("name") as string;
+    const email = data.get("email") as string;
+    const message = data.get("message") as string;
+
+    const subject = encodeURIComponent(`Portfolio contact from ${name}`);
+    const body = encodeURIComponent(`From: ${name} <${email}>\n\n${message}`);
+    const mailtoUrl = `mailto:anhduy@example.com?subject=${subject}&body=${body}`;
+
+    window.location.href = mailtoUrl;
+
     setTimeout(() => {
       setIsSubmitting(false);
-      const form = e.target as HTMLFormElement;
       form.reset();
-      
       toast({
         title: "Transmission Complete",
-        description: "Your message has been forged and sent. I'll respond shortly.",
+        description: "Your email client has opened. Send the message to reach me directly.",
         duration: 5000,
       });
-    }, 1500);
+    }, 600);
   };
 
   return (

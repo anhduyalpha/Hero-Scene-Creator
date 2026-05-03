@@ -50,7 +50,7 @@ const cards = [
     accentFrom: "rgba(180,83,9,0.7)",
     accentTo: "rgba(220,38,38,0.2)",
     icon: <Terminal className="w-5 h-5" aria-hidden="true" style={{ color: "#f59e0b" }} />,
-    label: "Commits in 2025",
+    label: "Commits in 2026",
     content: (
       <div className="mt-4">
         <p className="text-5xl font-black tabular-nums" style={{ color: "#f59e0b" }}>1,842</p>

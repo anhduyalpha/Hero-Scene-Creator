@@ -157,7 +157,7 @@ export function Navbar() {
               transition={{ duration: 0.3, delay: links.length * 0.08 }}
             >
               <a
-                href="#"
+                href="mailto:anhduy@example.com?subject=Resume Request"
                 className="relative overflow-hidden group px-4 py-2 font-mono text-sm text-primary rounded-lg focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 transition-all duration-300"
                 style={{
                   background: "linear-gradient(135deg, rgba(245,158,11,0.12) 0%, rgba(180,83,9,0.08) 100%)",
@@ -223,7 +223,7 @@ export function Navbar() {
                 </a>
               ))}
               <a
-                href="#"
+                href="mailto:anhduy@example.com?subject=Resume Request"
                 className="mt-4 px-8 py-3 font-mono text-primary rounded-xl focus-visible:outline-2 focus-visible:outline-primary transition-all duration-200"
                 style={{
                   background: "linear-gradient(135deg, rgba(245,158,11,0.15) 0%, rgba(180,83,9,0.10) 100%)",

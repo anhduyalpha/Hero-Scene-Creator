@@ -9,8 +9,8 @@ export interface SocialEntry {
 export const socials: SocialEntry[] = [
   {
     platform: "GitHub",
-    handle: "",
-    href: "",
+    handle: "@anhduyalpha",
+    href: "https://github.com/anhduyalpha",
     color: "#ffffff",
     icon: "github",
   },

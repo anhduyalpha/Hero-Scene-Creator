@@ -91,7 +91,7 @@ export function Footer() {
             </ul>
           )}
           <p className="font-mono text-xs text-muted-foreground md:text-right">
-            Designed & Built by <span style={{ color: "#f59e0b" }}>Anh Duy</span>
+            &copy; {new Date().getFullYear()} — Designed & Built by <span style={{ color: "#f59e0b" }}>Anh Duy</span>
           </p>
         </div>
       </div>

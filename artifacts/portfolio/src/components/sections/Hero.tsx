@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { ArrowRight, Terminal, Github, Twitter, Linkedin, Code2, Zap, Star } from "lucide-react";
 import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
+import { activeSocials } from "@/config/socials";
 
 const TITLES = [
   "Full-Stack Engineer",
@@ -222,32 +223,36 @@ export function Hero() {
             </motion.a>
           </div>
 
-          <div className="flex items-center gap-2 mt-6">
-            {[
-              { icon: Github, label: "GitHub" },
-              { icon: Twitter, label: "Twitter" },
-              { icon: Linkedin, label: "LinkedIn" },
-            ].map(({ icon: Icon, label }) => (
-              <motion.a
-                key={label}
-                href="#"
-                aria-label={label}
-                className="w-10 h-10 flex items-center justify-center rounded-full text-muted-foreground"
-                style={{ background: "rgba(245,158,11,0.04)", border: "1px solid rgba(245,158,11,0.12)" }}
-                whileHover={{
-                  color: "#f59e0b",
-                  backgroundColor: "rgba(245,158,11,0.12)",
-                  borderColor: "rgba(245,158,11,0.4)",
-                  scale: 1.12,
-                  boxShadow: "0 0 14px rgba(245,158,11,0.3)",
-                }}
-                whileTap={{ scale: 0.92 }}
-                transition={{ duration: 0.18 }}
-              >
-                <Icon className="w-4 h-4" />
-              </motion.a>
-            ))}
-          </div>
+          {activeSocials.length > 0 && (
+            <div className="flex items-center gap-2 mt-6">
+              {activeSocials.slice(0, 5).map((social) => {
+                const iconMap: Record<string, typeof Github> = { github: Github, twitter: Twitter, linkedin: Linkedin };
+                const Icon = iconMap[social.icon] ?? Github;
+                return (
+                  <motion.a
+                    key={social.platform}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${social.platform}${social.handle ? ` — ${social.handle}` : ""}`}
+                    className="w-10 h-10 flex items-center justify-center rounded-full text-muted-foreground"
+                    style={{ background: "rgba(245,158,11,0.04)", border: "1px solid rgba(245,158,11,0.12)" }}
+                    whileHover={{
+                      color: "#f59e0b",
+                      backgroundColor: "rgba(245,158,11,0.12)",
+                      borderColor: "rgba(245,158,11,0.4)",
+                      scale: 1.12,
+                      boxShadow: "0 0 14px rgba(245,158,11,0.3)",
+                    }}
+                    whileTap={{ scale: 0.92 }}
+                    transition={{ duration: 0.18 }}
+                  >
+                    <Icon className="w-4 h-4" aria-hidden="true" />
+                  </motion.a>
+                );
+              })}
+            </div>
+          )}
         </motion.div>
 
         {/* Right: 3D Avatar */}
