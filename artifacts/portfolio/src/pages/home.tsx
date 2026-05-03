@@ -75,9 +75,9 @@ export default function Home() {
           <SectionDivider label="skills" index="// 02" />
 
           <ScrollFrame label="// ARSENAL" className="mx-6 lg:mx-16 rounded-xl">
-            <div className="flex flex-col xl:flex-row items-center xl:items-start gap-4 pt-4">
+            <div className="flex flex-col xl:flex-row items-center justify-center gap-8 pt-4">
               <div className="flex-shrink-0"><TechOrbit /></div>
-              <div className="flex-shrink-0 xl:mt-4"><SkillRadar /></div>
+              <div className="flex-shrink-0"><SkillRadar /></div>
             </div>
             <Skills />
           </ScrollFrame>

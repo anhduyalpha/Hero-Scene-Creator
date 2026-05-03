@@ -182,16 +182,19 @@ export function Terminal() {
   const [histIdx, setHistIdx] = useState(-1);
   const [blink, setBlink] = useState(true);
   const [isMatrix, setIsMatrix] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const inputRef  = useRef<HTMLInputElement>(null);
+  const outputRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const t = setInterval(() => setBlink((b) => !b), 530);
     return () => clearInterval(t);
   }, []);
 
+  // Scroll only the terminal's own overflow container — never the page
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    const el = outputRef.current;
+    if (!el) return;
+    el.scrollTop = el.scrollHeight;
   }, [history]);
 
   const exec = useCallback((raw: string) => {
@@ -248,6 +251,7 @@ export function Terminal() {
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
+      e.preventDefault();
       exec(input);
       setInput("");
     } else if (e.key === "ArrowUp") {
@@ -338,7 +342,7 @@ export function Terminal() {
 
         {/* output area — relatively positioned so canvas can overlay */}
         <div className="relative" style={{ minHeight: 280 }}>
-          <div className="px-5 py-4 min-h-[280px] max-h-[420px] overflow-y-auto font-mono text-sm leading-relaxed">
+          <div ref={outputRef} className="px-5 py-4 min-h-[280px] max-h-[420px] overflow-y-auto font-mono text-sm leading-relaxed">
             <AnimatePresence initial={false}>
               {history.map((entry) => (
                 <motion.div
@@ -359,8 +363,6 @@ export function Terminal() {
                 </motion.div>
               ))}
             </AnimatePresence>
-            <div ref={bottomRef} />
-
             {/* prompt row */}
             {!isMatrix && (
               <div className="flex items-center gap-1.5 mt-1">
