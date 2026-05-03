@@ -1,51 +1,269 @@
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { Github, ExternalLink } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef } from "react";
+import {
+  motion,
+  useMotionValue,
+  useSpring,
+  useTransform,
+  useMotionTemplate,
+  useReducedMotion,
+} from "framer-motion";
+import { Github, ExternalLink, Code } from "lucide-react";
 
+/* ─── project data ─────────────────────────────────────── */
 const projects = [
   {
-    title: "Nexus",
-    tag: "Featured",
+    title: "Forge Queue",
     description:
-      "A distributed task queue built in Go with Redis. Handles millions of background jobs with high availability and exactly-once processing guarantees. Features a web dashboard for monitoring.",
-    tech: ["Go", "Redis", "Docker"],
+      "A highly resilient, distributed task queue built with Go and Redis Streams. Designed for high-throughput environments, capable of processing millions of background jobs with guaranteed at-least-once delivery, automatic retries, and comprehensive telemetry.",
+    image: `${import.meta.env.BASE_URL}project-forge.png`,
+    tech: ["Go", "Redis", "Docker", "Prometheus"],
     github: "#",
-    external: "#",
-    image: "/project-nexus.png",
-    accent: "rgba(139,92,246,0.6)",
+    demo: "#",
   },
   {
-    title: "Vaultify",
+    title: "Ember CLI",
     description:
-      "An open-source secrets manager with zero-knowledge encryption. Securely store, manage, and distribute API keys, passwords, and certificates across your infrastructure.",
-    tech: ["TypeScript", "Node.js", "PostgreSQL"],
+      "A lightning-fast, extensible command-line tool for scaffolding and managing complex microservice architectures. Written in Rust for minimal footprint and maximum execution speed, featuring a plugin system and interactive terminal UI.",
+    image: `${import.meta.env.BASE_URL}project-cli.png`,
+    tech: ["Rust", "Clap", "Tokio", "WebAssembly"],
     github: "#",
-    external: "#",
-    image: "/project-vaultify.png",
-    accent: "rgba(6,182,212,0.5)",
+    demo: "#",
   },
   {
-    title: "FlowGraph",
+    title: "HoverKit 3D",
     description:
-      "A visual workflow builder with real-time collaboration. Allows teams to design complex logic flows using a drag-and-drop canvas with multiplayer cursors and history.",
-    tech: ["React", "WebSockets", "Go"],
+      "A GPU-accelerated 3D hover-effects library delivering buttery-smooth perspective tilts, magnetic interactions, and depth-of-field glows. Zero runtime dependencies, tree-shakeable, used by 500+ projects on npm.",
+    image: `${import.meta.env.BASE_URL}project-3dhover.svg`,
+    tech: ["TypeScript", "WebGL", "GSAP", "CSS Houdini"],
     github: "#",
-    external: "#",
-    image: "/project-flowgraph.png",
-    accent: "rgba(168,85,247,0.5)",
+    demo: "#",
   },
   {
-    title: "Spectra",
+    title: "RedLine DB",
     description:
-      "A Kubernetes observability platform with custom metrics. Collects, aggregates, and visualizes cluster performance data with minimal overhead and intelligent alerting.",
-    tech: ["Go", "Kubernetes", "Prometheus"],
+      "An experimental, embeddable time-series database optimized for IoT workloads. Implements a custom storage engine leveraging memory-mapped files and a bespoke query language for rapid aggregations over massive datasets.",
+    image: `${import.meta.env.BASE_URL}project-db.png`,
+    tech: ["C++", "gRPC", "RocksDB", "React"],
     github: "#",
-    external: "#",
-    image: "/project-spectra.png",
-    accent: "rgba(34,211,238,0.45)",
+    demo: "#",
   },
 ];
 
+/* ─── spring configs ───────────────────────────────────── */
+const TILT_SPRING = { stiffness: 340, damping: 28, mass: 0.4 };
+const PARA_SPRING = { stiffness: 140, damping: 22, mass: 1.2 };
+const FADE_SPRING = { stiffness: 180, damping: 24 };
+/** Floaty, lazy spring for the magnetic pull layer */
+const MAG_SPRING  = { stiffness: 110, damping: 18, mass: 0.9 };
+
+/* ─────────────────────────────────────────────────────────
+   useMagneticPull
+   Attaches a single window mousemove listener. When the
+   cursor is within `threshold` px of the element's centre
+   it returns spring-animated x/y values that pull the
+   element toward the cursor by up to `maxPull` pixels.
+   The stable `anchorRef` never moves, so the rect is always
+   accurate and there is no feedback oscillation.
+───────────────────────────────────────────────────────── */
+function useMagneticPull(
+  anchorRef: React.RefObject<HTMLElement | null>,
+  disabled = false,
+  threshold = 220,
+  maxPull = 18,
+) {
+  const rawX = useMotionValue(0);
+  const rawY = useMotionValue(0);
+  const x = useSpring(rawX, MAG_SPRING);
+  const y = useSpring(rawY, MAG_SPRING);
+
+  useEffect(() => {
+    if (disabled) return;
+
+    const onMove = (e: MouseEvent) => {
+      const el = anchorRef.current;
+      if (!el) return;
+      const r  = el.getBoundingClientRect();
+      const cx = r.left + r.width  / 2;
+      const cy = r.top  + r.height / 2;
+      const dx = e.clientX - cx;
+      const dy = e.clientY - cy;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+
+      if (dist < threshold) {
+        /* pull strength falls off linearly with distance */
+        const force = (1 - dist / threshold) * maxPull;
+        rawX.set((dx / dist) * force);
+        rawY.set((dy / dist) * force);
+      } else {
+        rawX.set(0);
+        rawY.set(0);
+      }
+    };
+
+    window.addEventListener("mousemove", onMove, { passive: true });
+    return () => window.removeEventListener("mousemove", onMove);
+  }, [anchorRef, disabled, threshold, maxPull, rawX, rawY]);
+
+  return { x, y };
+}
+
+/* ─── 3D hover image ───────────────────────────────────── */
+function ProjectImage({ src, alt }: { src: string; alt: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const reducedMotion = useReducedMotion();
+
+  /* raw normalised mouse positions: –1 → +1 */
+  const nx = useMotionValue(0);
+  const ny = useMotionValue(0);
+
+  /* spring-smoothed active state (0 = rest, 1 = hovered) */
+  const rawActive = useMotionValue(0);
+  const active = useSpring(rawActive, FADE_SPRING);
+
+  /* tilt */
+  const rotateY = useSpring(useTransform(nx, [-1, 1], [-14, 14]), TILT_SPRING);
+  const rotateX = useSpring(useTransform(ny, [-1, 1], [10, -10]), TILT_SPRING);
+  const scale   = useSpring(1, { stiffness: 300, damping: 28 });
+
+  /* image parallax — moves opposite to tilt, slower spring */
+  const imgX = useSpring(useTransform(nx, [-1, 1], [16, -16]), PARA_SPRING);
+  const imgY = useSpring(useTransform(ny, [-1, 1], [11, -11]), PARA_SPRING);
+
+  /* specular highlight: bright ellipse at exact cursor position */
+  const specX = useTransform(nx, [-1, 1], ["8%",  "92%"]);
+  const specY = useTransform(ny, [-1, 1], ["8%",  "92%"]);
+
+  /* foil iridescence: opposite direction, 40% cursor speed */
+  const foilX = useTransform(nx, [-1, 1], ["70%", "30%"]);
+  const foilY = useTransform(ny, [-1, 1], ["70%", "30%"]);
+
+  /* directional shadow shifts with tilt angle */
+  const shadowDx = useTransform(rotateY, [-14, 14], [26, -26]);
+  const shadowDy = useTransform(rotateX, [10, -10], [-18, 18]);
+  const boxShadow = useMotionTemplate`${shadowDx}px ${shadowDy}px 80px rgba(0,0,0,0.8), 0 6px 24px rgba(0,0,0,0.55), 0 0 60px rgba(245,158,11,0.10)`;
+
+  /* gradient strings */
+  const specBg = useMotionTemplate`radial-gradient(ellipse 52% 44% at ${specX} ${specY}, rgba(255,255,255,0.15) 0%, rgba(245,158,11,0.07) 42%, transparent 68%)`;
+  const foilBg = useMotionTemplate`radial-gradient(ellipse 58% 50% at ${foilX} ${foilY}, rgba(245,158,11,0.30) 0%, rgba(220,38,38,0.18) 42%, rgba(99,102,241,0.06) 72%, transparent 88%)`;
+
+  /* image grayscale fades to 0 on hover */
+  const grayPct   = useTransform(active, [0, 1], [38, 0]);
+  const imgFilter = useMotionTemplate`grayscale(${grayPct}%)`;
+
+  /* dim overlay and rim driven by active spring */
+  const dimOpacity = useTransform(active, [0, 1], [0.42, 0]);
+  const rimAlpha   = useTransform(active, [0, 1], [0.2, 0.6]);
+  const rimShadow  = useMotionTemplate`inset 0 0 0 1.5px rgba(245,158,11,${rimAlpha})`;
+  const cornerOpacity = useTransform(active, [0, 1], [0.35, 1.0]);
+  const scanOpacity   = useTransform(active, [0, 1], [0, 1]);
+
+  const onMove = (e: React.MouseEvent) => {
+    if (!ref.current || reducedMotion) return;
+    const r = ref.current.getBoundingClientRect();
+    nx.set((e.clientX - r.left) / r.width  * 2 - 1);
+    ny.set((e.clientY - r.top)  / r.height * 2 - 1);
+  };
+  const onEnter = () => { scale.set(1.03); rawActive.set(1); };
+  const onLeave = () => { nx.set(0); ny.set(0); scale.set(1); rawActive.set(0); };
+
+  return (
+    <div style={{ perspective: "1000px" }} className="w-full">
+      <motion.div
+        ref={ref}
+        className="relative rounded-xl overflow-hidden aspect-[16/9] cursor-none select-none"
+        style={{
+          rotateX: reducedMotion ? 0 : rotateX,
+          rotateY: reducedMotion ? 0 : rotateY,
+          scale,
+          boxShadow,
+          willChange: "transform",
+        }}
+        onMouseMove={onMove}
+        onMouseEnter={onEnter}
+        onMouseLeave={onLeave}
+        aria-label={alt}
+      >
+        {/* ── LAYER 1: Parallax image ── */}
+        <motion.div
+          className="absolute pointer-events-none"
+          style={{
+            top: "-8%", left: "-8%",
+            width: "116%", height: "116%",
+            x: reducedMotion ? 0 : imgX,
+            y: reducedMotion ? 0 : imgY,
+          }}
+        >
+          <motion.img
+            src={src}
+            alt={alt}
+            className="w-full h-full object-cover"
+            style={{ filter: imgFilter }}
+            draggable={false}
+            loading="lazy"
+          />
+        </motion.div>
+
+        {/* ── LAYER 2: Dim overlay ── */}
+        <motion.div
+          className="absolute inset-0 pointer-events-none z-10"
+          style={{ backgroundColor: "#060402", opacity: dimOpacity }}
+        />
+
+        {/* ── LAYER 3: Specular highlight ── */}
+        <motion.div
+          className="absolute inset-0 pointer-events-none z-20"
+          style={{ background: specBg }}
+        />
+
+        {/* ── LAYER 4: Foil iridescence ── */}
+        <motion.div
+          className="absolute inset-0 pointer-events-none z-30 mix-blend-soft-light"
+          style={{ background: foilBg }}
+        />
+
+        {/* ── LAYER 5: Amber scanline sweep ── */}
+        <motion.div
+          className="absolute left-0 right-0 h-[3px] pointer-events-none z-40"
+          style={{
+            background: "linear-gradient(to right, transparent 0%, rgba(245,158,11,0.85) 50%, transparent 100%)",
+            opacity: scanOpacity,
+            filter: "blur(0.5px)",
+          }}
+          animate={{ top: ["-3%", "106%"] }}
+          transition={{ duration: 2.6, repeat: Infinity, ease: "linear" }}
+        />
+
+        {/* ── LAYER 6: Rim border ── */}
+        <motion.div
+          className="absolute inset-0 rounded-xl pointer-events-none z-50"
+          style={{ boxShadow: rimShadow }}
+        />
+
+        {/* ── LAYER 7: Corner accents ── */}
+        {(
+          [
+            "top-0 left-0 border-t-2 border-l-2",
+            "top-0 right-0 border-t-2 border-r-2",
+            "bottom-0 left-0 border-b-2 border-l-2",
+            "bottom-0 right-0 border-b-2 border-r-2",
+          ] as const
+        ).map((cls, i) => (
+          <motion.div
+            key={i}
+            className={`absolute w-6 h-6 pointer-events-none z-50 ${cls}`}
+            style={{
+              borderColor: "#f59e0b",
+              opacity: cornerOpacity,
+              filter: "drop-shadow(0 0 5px rgba(245,158,11,0.8))",
+            }}
+          />
+        ))}
+      </motion.div>
+    </div>
+  );
+}
+
+/* ─── single project row ───────────────────────────────── */
 function ProjectCard({
   project,
   index,
@@ -53,211 +271,193 @@ function ProjectCard({
   project: (typeof projects)[0];
   index: number;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [hovered, setHovered] = useState(false);
-  const [sheenPos, setSheenPos] = useState({ x: 50, y: 50 });
+  const isReversed      = index % 2 === 1;
+  const reducedMotion   = useReducedMotion();
 
-  /* ── 3-D tilt ─────────────────────────────────────────── */
-  const mx = useMotionValue(0);
-  const my = useMotionValue(0);
-  const rotateX = useSpring(useTransform(my, [-0.5, 0.5], ["14deg", "-14deg"]), {
-    stiffness: 180,
-    damping: 18,
-  });
-  const rotateY = useSpring(useTransform(mx, [-0.5, 0.5], ["-14deg", "14deg"]), {
-    stiffness: 180,
-    damping: 18,
-  });
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!ref.current) return;
-    const rect = ref.current.getBoundingClientRect();
-    const xPct = (e.clientX - rect.left) / rect.width - 0.5;
-    const yPct = (e.clientY - rect.top) / rect.height - 0.5;
-    mx.set(xPct);
-    my.set(yPct);
-    setSheenPos({
-      x: ((e.clientX - rect.left) / rect.width) * 100,
-      y: ((e.clientY - rect.top) / rect.height) * 100,
-    });
-  };
-
-  const handleMouseLeave = () => {
-    mx.set(0);
-    my.set(0);
-    setHovered(false);
-  };
+  /*
+   * anchorRef sits on the OUTER static div — its rect never moves
+   * so the distance calc is always accurate.
+   * The magnetic translation is applied to the INNER motion.div,
+   * which carries both the image and the ghost border together.
+   */
+  const anchorRef = useRef<HTMLDivElement>(null);
+  const { x: magX, y: magY } = useMagneticPull(
+    anchorRef,
+    !!reducedMotion,
+  );
 
   return (
     <motion.div
-      ref={ref}
-      style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-      onMouseMove={handleMouseMove}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={handleMouseLeave}
-      className="relative h-full group"
-      initial={{ opacity: 0, y: 40 }}
+      initial={{ opacity: 0, y: 44 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.6, delay: index * 0.07 }}
+      className={`flex flex-col ${
+        isReversed ? "lg:flex-row-reverse" : "lg:flex-row"
+      } gap-8 lg:gap-14 items-center`}
     >
-      {/* ── Outer glow ring ─────────────────────────────── */}
-      <div
-        className="absolute -inset-px rounded-xl transition-opacity duration-500 pointer-events-none z-0"
-        style={{
-          opacity: hovered ? 1 : 0,
-          background: `radial-gradient(ellipse at ${sheenPos.x}% ${sheenPos.y}%, ${project.accent} 0%, transparent 70%)`,
-          filter: "blur(1px)",
-        }}
-      />
-
-      {/* ── Card body ───────────────────────────────────── */}
-      <div className="relative h-full bg-card border border-card-border rounded-xl overflow-hidden flex flex-col z-10 transition-colors duration-300 group-hover:border-primary/40">
-
-        {/* ── Image header ───────────────────────────────── */}
-        <div
-          className="relative overflow-hidden"
-          style={{ height: "200px", transform: "translateZ(10px)" }}
+      {/* ── image column ── */}
+      <div ref={anchorRef} className="w-full lg:w-3/5 relative">
+        {/* magnetic layer — wraps both image and ghost border */}
+        <motion.div
+          className="relative"
+          style={{
+            x: magX,
+            y: magY,
+            willChange: "transform",
+          }}
         >
-          <motion.img
-            src={project.image}
-            alt={`${project.title} screenshot`}
-            className="w-full h-full object-cover object-top"
-            loading="lazy"
-            decoding="async"
-            animate={{ scale: hovered ? 1.07 : 1 }}
-            transition={{ duration: 0.5, ease: [0.25, 1, 0.5, 1] }}
-            draggable={false}
-          />
+          <ProjectImage src={project.image} alt={project.title} />
 
-          {/* gradient fade to card */}
-          <div className="absolute inset-0 bg-gradient-to-t from-card via-card/30 to-transparent" />
-
-          {/* sheen layer on image */}
-          <div
-            className="absolute inset-0 pointer-events-none transition-opacity duration-200"
+          {/* decorative offset ghost border (travels with magnetic pull) */}
+          <motion.div
+            className={`absolute top-4 ${
+              isReversed ? "-left-4" : "-right-4"
+            } w-full h-full border rounded-xl -z-10`}
             style={{
-              opacity: hovered ? 1 : 0,
-              background: `radial-gradient(circle at ${sheenPos.x}% ${sheenPos.y}%, rgba(255,255,255,0.12) 0%, transparent 55%)`,
+              borderColor: "rgba(245,158,11,0.16)",
+              aspectRatio: "16/9",
             }}
+            whileHover={{
+              x: isReversed ? -7 : 7,
+              y: 7,
+              borderColor: "rgba(245,158,11,0.36)",
+            }}
+            transition={{ duration: 0.35 }}
           />
+        </motion.div>
+      </div>
 
-          {/* Top badges */}
-          <div className="absolute top-3 left-3 flex items-center gap-2" style={{ transform: "translateZ(20px)" }}>
-            {project.tag && (
-              <span className="font-mono text-[10px] px-2 py-1 bg-primary text-primary-foreground rounded-sm tracking-wider">
-                {project.tag}
-              </span>
-            )}
-            <span
-              className="w-2 h-2 rounded-full"
-              style={{ background: project.accent, boxShadow: `0 0 8px ${project.accent}` }}
-            />
-          </div>
-
-          {/* Project links — visible on hover/focus for keyboard accessibility */}
-          <div
-            className="absolute top-3 right-3 flex gap-2 transition-all duration-300 opacity-0 group-hover:opacity-100 focus-within:opacity-100 focus-within:translate-y-0"
-            style={{
-              transform: hovered ? "translateY(0) translateZ(30px)" : "translateY(-6px) translateZ(30px)",
-            }}
-          >
-            <a
-              href={project.github}
-              className="w-11 h-11 flex items-center justify-center bg-black/60 backdrop-blur-sm border border-white/10 text-white/70 hover:text-white hover:border-primary/60 focus-visible:text-white focus-visible:border-primary/60 focus-visible:ring-2 focus-visible:ring-primary transition-colors rounded-md"
-              aria-label={`${project.title} on GitHub`}
-              style={{ touchAction: "manipulation" }}
-            >
-              <Github className="w-4 h-4" aria-hidden="true" />
-            </a>
-            <a
-              href={project.external}
-              className="w-11 h-11 flex items-center justify-center bg-black/60 backdrop-blur-sm border border-white/10 text-white/70 hover:text-white hover:border-primary/60 focus-visible:text-white focus-visible:border-primary/60 focus-visible:ring-2 focus-visible:ring-primary transition-colors rounded-md"
-              aria-label={`${project.title} live demo`}
-              style={{ touchAction: "manipulation" }}
-            >
-              <ExternalLink className="w-4 h-4" aria-hidden="true" />
-            </a>
-          </div>
+      {/* ── info column ── */}
+      <div
+        className={`w-full lg:w-2/5 flex flex-col z-20 ${
+          isReversed
+            ? "lg:items-start lg:text-left"
+            : "lg:items-end lg:text-right"
+        }`}
+      >
+        <div
+          className="flex items-center gap-2 font-mono text-sm mb-2"
+          style={{ color: "#f59e0b" }}
+        >
+          <Code className="w-4 h-4" aria-hidden="true" />
+          <span>Featured Project</span>
         </div>
 
-        {/* ── Content ──────────────────────────────────── */}
-        <div className="flex flex-col flex-1 p-6" style={{ transform: "translateZ(30px)" }}>
-          {/* Index watermark */}
-          <div className="absolute bottom-4 right-6 text-7xl font-black text-muted-foreground/[0.04] pointer-events-none select-none tabular-nums">
-            0{index + 1}
-          </div>
-
-          <motion.h3
-            className="text-xl font-bold mb-3 text-foreground transition-colors duration-300 group-hover:text-primary"
-            style={{ transform: "translateZ(10px)" }}
+        <h3
+          className="text-3xl font-bold text-foreground mb-6"
+          style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+        >
+          <motion.a
+            href={project.demo}
+            style={{ color: "inherit" }}
+            whileHover={{ color: "#f59e0b" }}
+            transition={{ duration: 0.18 }}
           >
             {project.title}
-          </motion.h3>
+          </motion.a>
+        </h3>
 
-          <p className="text-muted-foreground text-sm leading-relaxed mb-6 flex-1" style={{ transform: "translateZ(8px)" }}>
+        <motion.div
+          className="ember-glass p-6 rounded-xl mb-6 shadow-xl"
+          whileHover={{
+            borderColor: "rgba(245,158,11,0.35)",
+            boxShadow: "0 0 24px rgba(245,158,11,0.08), 0 12px 40px rgba(0,0,0,0.5)",
+          }}
+          transition={{ duration: 0.25 }}
+        >
+          <p className="text-muted-foreground leading-relaxed text-left">
             {project.description}
           </p>
+        </motion.div>
 
-          <ul className="flex flex-wrap gap-2" style={{ transform: "translateZ(12px)" }}>
-            {project.tech.map((tech) => (
-              <li
-                key={tech}
-                className="border border-primary/25 bg-primary/5 text-foreground hover:bg-primary/15 hover:border-primary hover:text-primary transition-colors text-xs font-mono px-2.5 py-1 rounded-sm cursor-default"
-              >
-                {tech}
-              </li>
-            ))}
-          </ul>
+        <ul
+          className={`flex flex-wrap gap-2.5 font-mono mb-8 ${
+            isReversed ? "justify-start" : "lg:justify-end"
+          }`}
+        >
+          {project.tech.map((tech) => (
+            <motion.li
+              key={tech}
+              className="px-2.5 py-1 rounded-sm font-mono text-xs"
+              style={{
+                background: "rgba(245,158,11,0.08)",
+                border: "1px solid rgba(245,158,11,0.18)",
+                color: "rgba(254,243,199,0.7)",
+              }}
+              whileHover={{
+                background: "rgba(245,158,11,0.18)",
+                borderColor: "rgba(245,158,11,0.48)",
+                color: "#f59e0b",
+                scale: 1.07,
+                boxShadow: "0 0 12px rgba(245,158,11,0.22)",
+              }}
+              transition={{ duration: 0.14 }}
+            >
+              {tech}
+            </motion.li>
+          ))}
+        </ul>
+
+        <div className="flex items-center gap-4">
+          {[
+            { href: project.github, Icon: Github,      label: `${project.title} GitHub` },
+            { href: project.demo,   Icon: ExternalLink, label: `${project.title} live demo` },
+          ].map(({ href, Icon, label }) => (
+            <motion.a
+              key={label}
+              href={href}
+              aria-label={label}
+              className="w-10 h-10 flex items-center justify-center rounded-full text-muted-foreground"
+              style={{
+                background: "rgba(245,158,11,0.05)",
+                border: "1px solid rgba(245,158,11,0.16)",
+              }}
+              whileHover={{
+                color: "#f59e0b",
+                backgroundColor: "rgba(245,158,11,0.14)",
+                borderColor: "rgba(245,158,11,0.52)",
+                scale: 1.15,
+                boxShadow: "0 0 18px rgba(245,158,11,0.32)",
+              }}
+              whileTap={{ scale: 0.9 }}
+              transition={{ duration: 0.16 }}
+            >
+              <Icon className="w-5 h-5" />
+            </motion.a>
+          ))}
         </div>
-
-        {/* ── Sheen overlay on whole card ──────────────── */}
-        <div
-          className="absolute inset-0 pointer-events-none rounded-xl transition-opacity duration-150"
-          style={{
-            opacity: hovered ? 1 : 0,
-            background: `radial-gradient(ellipse at ${sheenPos.x}% ${sheenPos.y}%, rgba(139,92,246,0.07) 0%, transparent 60%)`,
-          }}
-        />
-
-        {/* Scan line on hover */}
-        <motion.div
-          className="absolute left-0 right-0 h-[1px] pointer-events-none"
-          style={{ background: `linear-gradient(to right, transparent, ${project.accent}, transparent)` }}
-          animate={hovered ? { y: [0, 200, 400], opacity: [0, 0.6, 0] } : { y: 0, opacity: 0 }}
-          transition={hovered ? { duration: 1.2, ease: "linear", repeat: Infinity } : {}}
-        />
       </div>
     </motion.div>
   );
 }
 
+/* ─── section ──────────────────────────────────────────── */
 export function Projects() {
   return (
-    <section id="projects" className="py-32 bg-background relative z-10">
-      <div className="container mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6 }}
-          className="mb-16"
+    <section id="projects" className="py-24 container mx-auto px-6">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        className="mb-16"
+      >
+        <h2
+          className="text-3xl md:text-4xl font-bold mb-4 flex items-center gap-3"
+          style={{ fontFamily: "'Space Grotesk', sans-serif" }}
         >
-          <h2 className="text-3xl md:text-4xl font-bold flex items-center gap-4">
-            <span className="text-primary font-mono text-xl font-normal" aria-hidden="true">02.</span>
-            Some Things I&apos;ve Built
-            <div className="h-[1px] bg-border flex-1 max-w-xs ml-4" aria-hidden="true" />
-          </h2>
-        </motion.div>
+          <span className="text-secondary font-mono text-xl font-normal">
+            04.
+          </span>
+          Featured Work
+        </h2>
+        <div className="w-20 h-1 bg-primary shadow-[0_0_10px_var(--color-primary)]" />
+      </motion.div>
 
-        <div
-          className="grid grid-cols-1 md:grid-cols-2 gap-6"
-          style={{ perspective: "1200px" }}
-        >
-          {projects.map((project, i) => (
-            <ProjectCard key={project.title} project={project} index={i} />
-          ))}
-        </div>
+      <div className="flex flex-col gap-28">
+        {projects.map((project, index) => (
+          <ProjectCard key={project.title} project={project} index={index} />
+        ))}
       </div>
     </section>
   );

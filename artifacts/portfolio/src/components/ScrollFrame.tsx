@@ -7,14 +7,12 @@ interface ScrollFrameProps {
   className?: string;
 }
 
-/** Corner bracket + scan-line frame that draws in as the section enters viewport */
 export function ScrollFrame({ children, label, className = "" }: ScrollFrameProps) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.85", "start 0.3"] });
   const scanY = useTransform(scrollYProgress, [0, 1], ["-100%", "100%"]);
 
-  const corner =
-    "absolute w-6 h-6 pointer-events-none";
+  const corner = "absolute w-6 h-6 pointer-events-none";
   const line = (dir: "t" | "r" | "b" | "l") =>
     dir === "t" || dir === "b"
       ? "absolute h-[2px] bg-primary/40 origin-left"
@@ -22,8 +20,6 @@ export function ScrollFrame({ children, label, className = "" }: ScrollFrameProp
 
   return (
     <div ref={ref} className={`relative ${className}`}>
-      {/* ── Animated corner brackets ───────────────────── */}
-
       {/* Top-left */}
       <motion.div className={`${corner} top-0 left-0`}
         initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.3 }}
@@ -72,7 +68,6 @@ export function ScrollFrame({ children, label, className = "" }: ScrollFrameProp
         />
       </motion.div>
 
-      {/* ── Section label ─────────────────────────────── */}
       {label && (
         <motion.div
           initial={{ opacity: 0, x: -10 }}
@@ -87,13 +82,13 @@ export function ScrollFrame({ children, label, className = "" }: ScrollFrameProp
         </motion.div>
       )}
 
-      {/* ── Vertical scan line ────────────────────────── */}
+      {/* Amber scan line */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-0 rounded-[inherit]" aria-hidden="true">
         <motion.div
           className="absolute left-0 right-0 h-[80px]"
           style={{
             y: scanY,
-            background: "linear-gradient(to bottom, transparent 0%, rgba(139,92,246,0.04) 40%, rgba(139,92,246,0.08) 50%, rgba(139,92,246,0.04) 60%, transparent 100%)",
+            background: "linear-gradient(to bottom, transparent 0%, rgba(245,158,11,0.04) 40%, rgba(245,158,11,0.08) 50%, rgba(245,158,11,0.04) 60%, transparent 100%)",
           }}
         />
       </div>
@@ -103,7 +98,6 @@ export function ScrollFrame({ children, label, className = "" }: ScrollFrameProp
   );
 }
 
-/** Data-stream side element — decorative vertical ticker */
 export function DataStream({ side = "left" }: { side?: "left" | "right" }) {
   const ticks = Array.from({ length: 12 });
   return (
@@ -125,7 +119,7 @@ export function DataStream({ side = "left" }: { side?: "left" | "right" }) {
               ease: "easeInOut",
             }}
             style={{
-              boxShadow: i % 3 === 0 ? "0 0 6px rgba(139,92,246,0.5)" : "none",
+              boxShadow: i % 3 === 0 ? "0 0 6px rgba(245,158,11,0.5)" : "none",
             }}
           />
         ))}

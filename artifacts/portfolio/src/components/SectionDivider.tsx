@@ -17,16 +17,13 @@ export function SectionDivider({ label, index }: SectionDividerProps) {
       className="relative h-16 flex items-center overflow-hidden select-none z-10"
       aria-hidden="true"
     >
-      {/* Background baseline */}
       <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[1px] bg-border/50" />
 
-      {/* Scroll-driven fill line */}
       <motion.div
         className="absolute left-0 top-1/2 -translate-y-1/2 h-[1px] w-full bg-gradient-to-r from-primary/80 via-primary/40 to-transparent origin-left"
         style={{ scaleX }}
       />
 
-      {/* Left bracket cluster */}
       <div className="absolute left-6 flex items-center gap-3">
         <motion.div
           initial={{ scale: 0, rotate: -45 }}
@@ -34,7 +31,7 @@ export function SectionDivider({ label, index }: SectionDividerProps) {
           viewport={{ once: true }}
           transition={{ duration: 0.5, ease: "backOut" }}
           className="w-2 h-2 border border-primary/60"
-          style={{ boxShadow: "0 0 8px rgba(139,92,246,0.5)" }}
+          style={{ boxShadow: "0 0 8px rgba(245,158,11,0.5)" }}
         />
         <motion.div
           initial={{ width: 0 }}
@@ -56,7 +53,6 @@ export function SectionDivider({ label, index }: SectionDividerProps) {
         )}
       </div>
 
-      {/* Center label */}
       {label && (
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
@@ -71,17 +67,15 @@ export function SectionDivider({ label, index }: SectionDividerProps) {
         </motion.div>
       )}
 
-      {/* Animated scan dot */}
       <motion.div
         className="absolute top-1/2 -translate-y-1/2 w-1 h-1 rounded-full bg-primary z-10"
         initial={{ left: 0 }}
         whileInView={{ left: "100%" }}
         viewport={{ once: true }}
         transition={{ duration: 1.8, ease: "linear", delay: 0.3 }}
-        style={{ boxShadow: "0 0 12px 4px rgba(139,92,246,0.6), 0 0 4px 1px rgba(139,92,246,1)" }}
+        style={{ boxShadow: "0 0 12px 4px rgba(245,158,11,0.6), 0 0 4px 1px rgba(245,158,11,1)" }}
       />
 
-      {/* Right bracket cluster */}
       <div className="absolute right-6 flex items-center gap-3 flex-row-reverse">
         <motion.div
           initial={{ scale: 0, rotate: -45 }}
@@ -89,7 +83,7 @@ export function SectionDivider({ label, index }: SectionDividerProps) {
           viewport={{ once: true }}
           transition={{ duration: 0.5, ease: "backOut" }}
           className="w-2 h-2 border border-primary/40"
-          style={{ boxShadow: "0 0 6px rgba(139,92,246,0.3)" }}
+          style={{ boxShadow: "0 0 6px rgba(245,158,11,0.3)" }}
         />
         <motion.div
           initial={{ width: 0 }}
@@ -103,7 +97,6 @@ export function SectionDivider({ label, index }: SectionDividerProps) {
   );
 }
 
-/** Sticky vertical scroll progress bar on the left edge */
 export function ScrollProgress() {
   const { scrollYProgress } = useScroll();
   const scaleY = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
@@ -113,8 +106,8 @@ export function ScrollProgress() {
       className="fixed left-0 top-0 w-[2px] h-full origin-top z-50 pointer-events-none"
       style={{
         scaleY,
-        background: "linear-gradient(to bottom, hsl(var(--primary)) 0%, rgba(139,92,246,0.3) 100%)",
-        boxShadow: "2px 0 12px rgba(139,92,246,0.4)",
+        background: "linear-gradient(to bottom, hsl(var(--primary)) 0%, rgba(245,158,11,0.3) 100%)",
+        boxShadow: "2px 0 12px rgba(245,158,11,0.4)",
       }}
       aria-hidden="true"
     />

@@ -2,6 +2,7 @@ import { Hero } from "@/components/sections/Hero";
 import { Bento } from "@/components/sections/Bento";
 import { About } from "@/components/sections/About";
 import { Marquee } from "@/components/sections/Marquee";
+import { Skills } from "@/components/sections/Skills";
 import { Projects } from "@/components/sections/Projects";
 import { Experience } from "@/components/sections/Experience";
 import { Blog } from "@/components/sections/Blog";
@@ -15,10 +16,7 @@ import { ScrollFrame, DataStream } from "@/components/ScrollFrame";
 export default function Home() {
   return (
     <>
-      <a
-        href="#main-content"
-        className="skip-link"
-      >
+      <a href="#main-content" className="skip-link">
         Skip to main content
       </a>
       <ShaderBackground />
@@ -34,7 +32,7 @@ export default function Home() {
         <main id="main-content">
           <Hero />
 
-          <SectionDivider label="bento" index="// 00" />
+          <SectionDivider label="highlights" index="// 00" />
 
           <ScrollFrame label="// HIGHLIGHTS" className="mx-6 lg:mx-16 rounded-xl">
             <Bento />
@@ -48,25 +46,31 @@ export default function Home() {
             <About />
           </ScrollFrame>
 
-          <SectionDivider label="projects" index="// 02" />
+          <SectionDivider label="skills" index="// 02" />
+
+          <ScrollFrame label="// ARSENAL" className="mx-6 lg:mx-16 rounded-xl">
+            <Skills />
+          </ScrollFrame>
+
+          <SectionDivider label="projects" index="// 03" />
 
           <ScrollFrame label="// PROJECTS" className="mx-6 lg:mx-16 rounded-xl">
             <Projects />
           </ScrollFrame>
 
-          <SectionDivider label="experience" index="// 03" />
+          <SectionDivider label="experience" index="// 04" />
 
           <ScrollFrame label="// EXPERIENCE" className="mx-6 lg:mx-16 rounded-xl">
             <Experience />
           </ScrollFrame>
 
-          <SectionDivider label="writing" index="// 04" />
+          <SectionDivider label="writing" index="// 05" />
 
           <ScrollFrame label="// BLOG" className="mx-6 lg:mx-16 rounded-xl">
             <Blog />
           </ScrollFrame>
 
-          <SectionDivider label="contact" index="// 05" />
+          <SectionDivider label="contact" index="// 06" />
 
           <ScrollFrame label="// CONTACT" className="mx-6 lg:mx-16 rounded-xl">
             <Contact />

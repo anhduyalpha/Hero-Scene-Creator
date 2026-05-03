@@ -38,7 +38,8 @@ export function Preloader({ onComplete }: PreloaderProps) {
     <AnimatePresence>
       {!exiting && (
         <motion.div
-          className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black"
+          className="fixed inset-0 z-[9999] flex flex-col items-center justify-center"
+          style={{ background: "#060402" }}
           exit={{ y: "-100%" }}
           transition={{ duration: 0.85, ease: [0.76, 0, 0.24, 1] }}
           aria-modal="true"
@@ -55,7 +56,8 @@ export function Preloader({ onComplete }: PreloaderProps) {
 
           <div className="relative flex flex-col items-center">
             <motion.span
-              className="text-[clamp(5rem,20vw,12rem)] font-black text-white leading-none tabular-nums tracking-tighter"
+              className="text-[clamp(5rem,20vw,12rem)] font-black leading-none tabular-nums tracking-tighter"
+              style={{ color: "#f59e0b" }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
@@ -71,11 +73,11 @@ export function Preloader({ onComplete }: PreloaderProps) {
               transition={{ delay: 0.3, duration: 0.4 }}
               aria-hidden="true"
             >
-              <div className="h-[1px] w-12 bg-white/20" />
-              <span className="font-mono text-xs tracking-[0.4em] uppercase text-white/60">
+              <div className="h-[1px] w-12" style={{ background: "rgba(245,158,11,0.2)" }} />
+              <span className="font-mono text-xs tracking-[0.4em] uppercase" style={{ color: "rgba(245,158,11,0.6)" }}>
                 Loading
               </span>
-              <div className="h-[1px] w-12 bg-white/20" />
+              <div className="h-[1px] w-12" style={{ background: "rgba(245,158,11,0.2)" }} />
             </motion.div>
           </div>
 
@@ -86,13 +88,14 @@ export function Preloader({ onComplete }: PreloaderProps) {
           />
 
           <motion.div
-            className="absolute bottom-8 right-8 font-mono text-xs text-white/20 tracking-widest"
+            className="absolute bottom-8 right-8 font-mono text-xs tracking-widest"
+            style={{ color: "rgba(245,158,11,0.3)" }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
             aria-hidden="true"
           >
-            AlphaD / PORTFOLIO
+            ANHDUY · AlphaD
           </motion.div>
         </motion.div>
       )}

@@ -53,7 +53,7 @@ func fetchAll(ctx context.Context, urls []string) ([]Response, error) {
     results := make([]Response, len(urls))
 
     for i, url := range urls {
-        i, url := i, url // capture loop vars
+        i, url := i, url
         g.Go(func() error {
             resp, err := fetch(ctx, url)
             if err != nil {
@@ -71,20 +71,13 @@ func fetchAll(ctx context.Context, urls []string) ([]Response, error) {
 }
 ```
 
-`errgroup.WithContext` cancels the context when *any* goroutine returns an error, automatically stopping the others. This replaces a lot of boilerplate `sync.WaitGroup` + error channel code.
+`errgroup.WithContext` cancels the context when *any* goroutine returns an error, automatically stopping the others.
 
 ## 3. The Timeout Pattern
 
-Never make a network call without a timeout. But the timeout should usually come from the *caller's* context, not a hardcoded value:
+Never make a network call without a timeout. But the timeout should usually come from the *caller's* context:
 
 ```go
-// Bad: hardcoded timeout ignores caller's deadline
-func callService(url string) (*Response, error) {
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
-    return http.Get(ctx, url)
-}
-
 // Good: respect the caller's context, add a local cap
 func callService(ctx context.Context, url string) (*Response, error) {
     ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
@@ -97,7 +90,7 @@ The `defer cancel()` is non-negotiable. Missing it leaks the timer goroutine.
 
 ## 4. Channel Ownership
 
-The rule: **only the goroutine that creates a channel should close it**. Receivers never close. If multiple senders exist, use a `sync.WaitGroup` in a coordinator:
+The rule: **only the goroutine that creates a channel should close it**. If multiple senders exist, use a `sync.WaitGroup` in a coordinator:
 
 ```go
 func merge(sources ...<-chan int) <-chan int {
@@ -116,7 +109,7 @@ func merge(sources ...<-chan int) <-chan int {
 
     go func() {
         wg.Wait()
-        close(out) // safe: only this goroutine closes
+        close(out)
     }()
 
     return out
@@ -125,13 +118,13 @@ func merge(sources ...<-chan int) <-chan int {
 
 ## 5. sync.Once for Expensive Initialization
 
-Don't use `init()` for expensive operations. Use `sync.Once` so initialization is lazy and only happens if the code path is actually reached:
+Don't use `init()` for expensive operations. Use `sync.Once` so initialization is lazy:
 
 ```go
 var (
-    dbOnce     sync.Once
-    db         *sql.DB
-    dbInitErr  error
+    dbOnce    sync.Once
+    db        *sql.DB
+    dbInitErr error
 )
 
 func getDB() (*sql.DB, error) {
@@ -144,12 +137,10 @@ func getDB() (*sql.DB, error) {
 
 ## Patterns to Avoid
 
-**Goroutine leaks** — always provide a way to stop goroutines. If a goroutine blocks on a channel receive, make sure the sender will eventually close the channel or the goroutine has a `ctx.Done()` path.
+**Goroutine leaks** — always provide a way to stop goroutines via `ctx.Done()`.
 
 **Shared mutable state without locks** — the race detector (`go test -race`) catches these. Run it in CI, always.
 
 **Closing a channel twice** — panics at runtime. Use `sync.Once` if you're not sure.
 
 **Goroutines in `init()`** — they start before `main()` and their lifecycle is impossible to control.
-
-These patterns have saved me countless hours debugging deadlocks and memory leaks. The Go memory model is strict: when in doubt, reach for a channel or a mutex, and always instrument with the race detector.

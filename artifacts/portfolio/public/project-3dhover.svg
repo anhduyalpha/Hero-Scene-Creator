@@ -1,0 +1,290 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" style="background:#060402">
+  <defs>
+    <radialGradient id="bgGlow" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#1a0e02" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#060402" stop-opacity="1"/>
+    </radialGradient>
+    <radialGradient id="cardGlow1" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.18"/>
+      <stop offset="60%" stop-color="#92400e" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#060402" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="cardGlow2" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#dc2626" stop-opacity="0.14"/>
+      <stop offset="60%" stop-color="#7f1d1d" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#060402" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="cardFace" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1c1007"/>
+      <stop offset="50%" stop-color="#0f0904"/>
+      <stop offset="100%" stop-color="#0a0604"/>
+    </linearGradient>
+    <linearGradient id="cardFaceHover" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#261505"/>
+      <stop offset="50%" stop-color="#180e04"/>
+      <stop offset="100%" stop-color="#0e0804"/>
+    </linearGradient>
+    <linearGradient id="topEdge" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.1"/>
+      <stop offset="40%" stop-color="#f59e0b" stop-opacity="0.9"/>
+      <stop offset="60%" stop-color="#dc2626" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#dc2626" stop-opacity="0.1"/>
+    </linearGradient>
+    <linearGradient id="topEdgeHover" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.3"/>
+      <stop offset="30%" stop-color="#f59e0b" stop-opacity="1"/>
+      <stop offset="70%" stop-color="#dc2626" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#dc2626" stop-opacity="0.3"/>
+    </linearGradient>
+    <linearGradient id="gridFade" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0"/>
+      <stop offset="40%" stop-color="#f59e0b" stop-opacity="0.12"/>
+      <stop offset="80%" stop-color="#f59e0b" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="codeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#dc2626"/>
+    </linearGradient>
+    <filter id="glowAmber" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <filter id="glowStrong" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="20" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <filter id="shadowDeep">
+      <feDropShadow dx="0" dy="24" stdDeviation="20" flood-color="#f59e0b" flood-opacity="0.25"/>
+    </filter>
+    <filter id="shadowMid">
+      <feDropShadow dx="0" dy="16" stdDeviation="14" flood-color="#000" flood-opacity="0.8"/>
+    </filter>
+    <filter id="softBlur">
+      <feGaussianBlur stdDeviation="3"/>
+    </filter>
+    <clipPath id="cardClip1">
+      <rect x="0" y="0" width="230" height="300" rx="12"/>
+    </clipPath>
+    <clipPath id="cardClip2">
+      <rect x="0" y="0" width="230" height="300" rx="12"/>
+    </clipPath>
+    <clipPath id="cardClipMain">
+      <rect x="0" y="0" width="260" height="330" rx="14"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="675" fill="url(#bgGlow)"/>
+
+  <!-- Perspective grid - horizontal lines -->
+  <g opacity="0.5" fill="url(#gridFade)">
+    <!-- Vertical grid lines (perspective) -->
+    <line x1="600" y1="200" x2="0" y2="675" stroke="#f59e0b" stroke-opacity="0.07" stroke-width="1"/>
+    <line x1="600" y1="200" x2="150" y2="675" stroke="#f59e0b" stroke-opacity="0.07" stroke-width="1"/>
+    <line x1="600" y1="200" x2="300" y2="675" stroke="#f59e0b" stroke-opacity="0.07" stroke-width="1"/>
+    <line x1="600" y1="200" x2="450" y2="675" stroke="#f59e0b" stroke-opacity="0.07" stroke-width="1"/>
+    <line x1="600" y1="200" x2="600" y2="675" stroke="#f59e0b" stroke-opacity="0.09" stroke-width="1"/>
+    <line x1="600" y1="200" x2="750" y2="675" stroke="#f59e0b" stroke-opacity="0.07" stroke-width="1"/>
+    <line x1="600" y1="200" x2="900" y2="675" stroke="#f59e0b" stroke-opacity="0.07" stroke-width="1"/>
+    <line x1="600" y1="200" x2="1050" y2="675" stroke="#f59e0b" stroke-opacity="0.07" stroke-width="1"/>
+    <line x1="600" y1="200" x2="1200" y2="675" stroke="#f59e0b" stroke-opacity="0.07" stroke-width="1"/>
+    <!-- Horizontal grid lines -->
+    <line x1="0" y1="420" x2="1200" y2="420" stroke="#f59e0b" stroke-opacity="0.06" stroke-width="1"/>
+    <line x1="0" y1="480" x2="1200" y2="480" stroke="#f59e0b" stroke-opacity="0.05" stroke-width="1"/>
+    <line x1="0" y1="540" x2="1200" y2="540" stroke="#f59e0b" stroke-opacity="0.04" stroke-width="1"/>
+    <line x1="0" y1="600" x2="1200" y2="600" stroke="#f59e0b" stroke-opacity="0.03" stroke-width="1"/>
+    <line x1="0" y1="360" x2="1200" y2="360" stroke="#f59e0b" stroke-opacity="0.06" stroke-width="1"/>
+    <line x1="0" y1="300" x2="1200" y2="300" stroke="#f59e0b" stroke-opacity="0.05" stroke-width="1"/>
+  </g>
+
+  <!-- Ambient glow spots -->
+  <ellipse cx="370" cy="380" rx="180" ry="120" fill="#f59e0b" opacity="0.04" filter="url(#softBlur)"/>
+  <ellipse cx="830" cy="380" rx="180" ry="120" fill="#dc2626" opacity="0.04" filter="url(#softBlur)"/>
+  <ellipse cx="600" cy="310" rx="220" ry="150" fill="#f59e0b" opacity="0.08" filter="url(#softBlur)"/>
+
+  <!-- ===== CARD 1 (left, not hovered) ===== -->
+  <g transform="translate(178, 175) rotate(-6, 115, 150)">
+    <!-- Shadow -->
+    <rect x="10" y="20" width="230" height="300" rx="12" fill="#f59e0b" opacity="0.06" filter="url(#softBlur)"/>
+    <rect x="5" y="15" width="230" height="300" rx="12" fill="#000" opacity="0.7" filter="url(#softBlur)"/>
+    <!-- Card body -->
+    <rect width="230" height="300" rx="12" fill="url(#cardFace)"/>
+    <rect width="230" height="300" rx="12" fill="none" stroke="#f59e0b" stroke-opacity="0.2" stroke-width="1"/>
+    <!-- Top accent line -->
+    <rect x="0" y="0" width="230" height="2" rx="1" fill="url(#topEdge)"/>
+    <!-- Card inner content: UI mockup -->
+    <rect x="18" y="20" width="60" height="60" rx="8" fill="#f59e0b" opacity="0.1"/>
+    <rect x="18" y="20" width="60" height="60" rx="8" fill="none" stroke="#f59e0b" stroke-opacity="0.3" stroke-width="1"/>
+    <rect x="26" y="29" width="16" height="16" rx="3" fill="#f59e0b" opacity="0.5"/>
+    <rect x="26" y="51" width="44" height="4" rx="2" fill="#fef3c7" opacity="0.3"/>
+    <rect x="26" y="60" width="32" height="3" rx="1.5" fill="#fef3c7" opacity="0.15"/>
+    <!-- Text lines -->
+    <rect x="18" y="96" width="140" height="6" rx="3" fill="#fef3c7" opacity="0.4"/>
+    <rect x="18" y="108" width="110" height="5" rx="2.5" fill="#fef3c7" opacity="0.2"/>
+    <rect x="18" y="120" width="125" height="5" rx="2.5" fill="#fef3c7" opacity="0.2"/>
+    <!-- Code block -->
+    <rect x="18" y="140" width="194" height="80" rx="6" fill="#0a0604" opacity="0.8"/>
+    <rect x="18" y="140" width="194" height="80" rx="6" fill="none" stroke="#f59e0b" stroke-opacity="0.1" stroke-width="1"/>
+    <rect x="28" y="152" width="48" height="4" rx="2" fill="#f59e0b" opacity="0.6"/>
+    <rect x="82" y="152" width="30" height="4" rx="2" fill="#dc2626" opacity="0.5"/>
+    <rect x="28" y="163" width="80" height="3.5" rx="1.75" fill="#fef3c7" opacity="0.2"/>
+    <rect x="28" y="173" width="130" height="3.5" rx="1.75" fill="#fef3c7" opacity="0.15"/>
+    <rect x="28" y="183" width="90" height="3.5" rx="1.75" fill="#f59e0b" opacity="0.25"/>
+    <rect x="28" y="193" width="60" height="3.5" rx="1.75" fill="#fef3c7" opacity="0.1"/>
+    <!-- Tags -->
+    <rect x="18" y="234" width="52" height="18" rx="9" fill="#f59e0b" opacity="0.12"/>
+    <rect x="18" y="234" width="52" height="18" rx="9" fill="none" stroke="#f59e0b" stroke-opacity="0.3" stroke-width="1"/>
+    <text x="44" y="247" font-family="monospace" font-size="8" fill="#f59e0b" text-anchor="middle">WebGL</text>
+    <rect x="76" y="234" width="58" height="18" rx="9" fill="#f59e0b" opacity="0.08"/>
+    <rect x="76" y="234" width="58" height="18" rx="9" fill="none" stroke="#f59e0b" stroke-opacity="0.2" stroke-width="1"/>
+    <text x="105" y="247" font-family="monospace" font-size="8" fill="#fef3c7" opacity="0.6" text-anchor="middle">TypeScript</text>
+    <!-- Angle label -->
+    <text x="18" y="282" font-family="monospace" font-size="8" fill="#f59e0b" opacity="0.35">rotate(−6deg)</text>
+  </g>
+
+  <!-- ===== CARD 2 (right, not hovered) ===== -->
+  <g transform="translate(792, 175) rotate(6, 115, 150)">
+    <rect x="10" y="20" width="230" height="300" rx="12" fill="#dc2626" opacity="0.04" filter="url(#softBlur)"/>
+    <rect x="5" y="15" width="230" height="300" rx="12" fill="#000" opacity="0.7" filter="url(#softBlur)"/>
+    <rect width="230" height="300" rx="12" fill="url(#cardFace)"/>
+    <rect width="230" height="300" rx="12" fill="none" stroke="#dc2626" stroke-opacity="0.2" stroke-width="1"/>
+    <rect x="0" y="0" width="230" height="2" rx="1" fill="url(#topEdge)"/>
+    <rect x="18" y="20" width="60" height="60" rx="8" fill="#dc2626" opacity="0.08"/>
+    <rect x="18" y="20" width="60" height="60" rx="8" fill="none" stroke="#dc2626" stroke-opacity="0.25" stroke-width="1"/>
+    <rect x="26" y="29" width="16" height="16" rx="3" fill="#dc2626" opacity="0.4"/>
+    <rect x="26" y="51" width="44" height="4" rx="2" fill="#fef3c7" opacity="0.25"/>
+    <rect x="26" y="60" width="32" height="3" rx="1.5" fill="#fef3c7" opacity="0.12"/>
+    <rect x="18" y="96" width="140" height="6" rx="3" fill="#fef3c7" opacity="0.35"/>
+    <rect x="18" y="108" width="110" height="5" rx="2.5" fill="#fef3c7" opacity="0.17"/>
+    <rect x="18" y="120" width="125" height="5" rx="2.5" fill="#fef3c7" opacity="0.17"/>
+    <rect x="18" y="140" width="194" height="80" rx="6" fill="#0a0604" opacity="0.8"/>
+    <rect x="18" y="140" width="194" height="80" rx="6" fill="none" stroke="#dc2626" stroke-opacity="0.1" stroke-width="1"/>
+    <rect x="28" y="152" width="48" height="4" rx="2" fill="#dc2626" opacity="0.5"/>
+    <rect x="82" y="152" width="30" height="4" rx="2" fill="#f59e0b" opacity="0.4"/>
+    <rect x="28" y="163" width="80" height="3.5" rx="1.75" fill="#fef3c7" opacity="0.2"/>
+    <rect x="28" y="173" width="130" height="3.5" rx="1.75" fill="#fef3c7" opacity="0.12"/>
+    <rect x="28" y="183" width="90" height="3.5" rx="1.75" fill="#dc2626" opacity="0.2"/>
+    <rect x="28" y="193" width="60" height="3.5" rx="1.75" fill="#fef3c7" opacity="0.08"/>
+    <rect x="18" y="234" width="44" height="18" rx="9" fill="#dc2626" opacity="0.1"/>
+    <rect x="18" y="234" width="44" height="18" rx="9" fill="none" stroke="#dc2626" stroke-opacity="0.25" stroke-width="1"/>
+    <text x="40" y="247" font-family="monospace" font-size="8" fill="#dc2626" text-anchor="middle">GSAP</text>
+    <rect x="68" y="234" width="68" height="18" rx="9" fill="#f59e0b" opacity="0.06"/>
+    <rect x="68" y="234" width="68" height="18" rx="9" fill="none" stroke="#f59e0b" stroke-opacity="0.18" stroke-width="1"/>
+    <text x="102" y="247" font-family="monospace" font-size="8" fill="#fef3c7" opacity="0.5" text-anchor="middle">CSS Houdini</text>
+    <text x="18" y="282" font-family="monospace" font-size="8" fill="#f59e0b" opacity="0.35">rotate(+6deg)</text>
+  </g>
+
+  <!-- ===== MAIN CARD (center, hovered - elevated) ===== -->
+  <!-- Halo glow below -->
+  <ellipse cx="600" cy="510" rx="160" ry="30" fill="#f59e0b" opacity="0.2" filter="url(#softBlur)"/>
+  <ellipse cx="600" cy="510" rx="100" ry="18" fill="#f59e0b" opacity="0.3" filter="url(#softBlur)"/>
+
+  <g transform="translate(470, 140)" filter="url(#shadowDeep)">
+    <!-- Extended glow aura -->
+    <rect x="-20" y="-20" width="300" height="370" rx="20" fill="#f59e0b" opacity="0.08" filter="url(#softBlur)"/>
+    <!-- Shadow -->
+    <rect x="15" y="25" width="260" height="330" rx="14" fill="#000" opacity="0.9" filter="url(#softBlur)"/>
+    <!-- Card body -->
+    <rect width="260" height="330" rx="14" fill="url(#cardFaceHover)"/>
+    <!-- Subtle inner glow -->
+    <rect width="260" height="330" rx="14" fill="url(#cardGlow1)"/>
+    <!-- Border -->
+    <rect width="260" height="330" rx="14" fill="none" stroke="#f59e0b" stroke-opacity="0.5" stroke-width="1.5"/>
+    <!-- Top accent line - bright -->
+    <rect x="0" y="0" width="260" height="2.5" rx="1.25" fill="url(#topEdgeHover)"/>
+    <!-- Left accent line subtle -->
+    <rect x="0" y="0" width="1.5" height="330" rx="0.75" fill="#f59e0b" opacity="0.3"/>
+
+    <!-- Icon area -->
+    <rect x="20" y="24" width="70" height="70" rx="10" fill="#f59e0b" opacity="0.14"/>
+    <rect x="20" y="24" width="70" height="70" rx="10" fill="none" stroke="#f59e0b" stroke-opacity="0.45" stroke-width="1.5"/>
+    <!-- Icon inner: 3D cube representation -->
+    <polygon points="55,36 70,44 70,60 55,68 40,60 40,44" fill="none" stroke="#f59e0b" stroke-opacity="0.7" stroke-width="1.5"/>
+    <polygon points="55,36 70,44 55,52 40,44" fill="#f59e0b" opacity="0.2"/>
+    <line x1="55" y1="52" x2="55" y2="68" stroke="#f59e0b" stroke-opacity="0.4" stroke-width="1"/>
+
+    <!-- Title -->
+    <text x="20" y="118" font-family="'Space Grotesk', sans-serif" font-size="18" font-weight="700" fill="#fef3c7">HoverKit 3D</text>
+    <!-- Subtitle -->
+    <text x="20" y="136" font-family="monospace" font-size="9" fill="#f59e0b" opacity="0.7">3D HOVER EFFECTS LIBRARY</text>
+
+    <!-- Description lines -->
+    <rect x="20" y="148" width="200" height="5" rx="2.5" fill="#fef3c7" opacity="0.3"/>
+    <rect x="20" y="159" width="170" height="4.5" rx="2.25" fill="#fef3c7" opacity="0.18"/>
+    <rect x="20" y="169" width="185" height="4.5" rx="2.25" fill="#fef3c7" opacity="0.18"/>
+
+    <!-- Code block -->
+    <rect x="20" y="185" width="220" height="88" rx="8" fill="#060402" opacity="0.9"/>
+    <rect x="20" y="185" width="220" height="88" rx="8" fill="none" stroke="#f59e0b" stroke-opacity="0.2" stroke-width="1"/>
+    <!-- Line 1: function call in amber -->
+    <text x="32" y="201" font-family="monospace" font-size="9.5" fill="#f59e0b" opacity="0.9">HoverKit</text>
+    <text x="86" y="201" font-family="monospace" font-size="9.5" fill="#fef3c7" opacity="0.5">.</text>
+    <text x="90" y="201" font-family="monospace" font-size="9.5" fill="#dc2626" opacity="0.9">init</text>
+    <text x="110" y="201" font-family="monospace" font-size="9.5" fill="#fef3c7" opacity="0.5">({</text>
+    <!-- Line 2 -->
+    <text x="42" y="215" font-family="monospace" font-size="9" fill="#fef3c7" opacity="0.4">perspective</text>
+    <text x="113" y="215" font-family="monospace" font-size="9" fill="#fef3c7" opacity="0.3">:</text>
+    <text x="118" y="215" font-family="monospace" font-size="9" fill="#f59e0b" opacity="0.8">800</text>
+    <text x="133" y="215" font-family="monospace" font-size="9" fill="#fef3c7" opacity="0.3">,</text>
+    <!-- Line 3 -->
+    <text x="42" y="229" font-family="monospace" font-size="9" fill="#fef3c7" opacity="0.4">maxRotate</text>
+    <text x="103" y="229" font-family="monospace" font-size="9" fill="#fef3c7" opacity="0.3">:</text>
+    <text x="108" y="229" font-family="monospace" font-size="9" fill="#f59e0b" opacity="0.8">15</text>
+    <text x="120" y="229" font-family="monospace" font-size="9" fill="#fef3c7" opacity="0.3">,</text>
+    <!-- Line 4 -->
+    <text x="42" y="243" font-family="monospace" font-size="9" fill="#fef3c7" opacity="0.4">glowColor</text>
+    <text x="103" y="243" font-family="monospace" font-size="9" fill="#fef3c7" opacity="0.3">:</text>
+    <text x="108" y="243" font-family="monospace" font-size="9" fill="#dc2626" opacity="0.8">'#f59e0b'</text>
+    <!-- Line 5 -->
+    <text x="32" y="257" font-family="monospace" font-size="9.5" fill="#fef3c7" opacity="0.5">})</text>
+
+    <!-- Tech tags -->
+    <rect x="20" y="284" width="64" height="20" rx="10" fill="#f59e0b" opacity="0.15"/>
+    <rect x="20" y="284" width="64" height="20" rx="10" fill="none" stroke="#f59e0b" stroke-opacity="0.5" stroke-width="1"/>
+    <text x="52" y="298" font-family="monospace" font-size="8.5" fill="#f59e0b" font-weight="600" text-anchor="middle">TypeScript</text>
+
+    <rect x="90" y="284" width="50" height="20" rx="10" fill="#dc2626" opacity="0.12"/>
+    <rect x="90" y="284" width="50" height="20" rx="10" fill="none" stroke="#dc2626" stroke-opacity="0.4" stroke-width="1"/>
+    <text x="115" y="298" font-family="monospace" font-size="8.5" fill="#dc2626" text-anchor="middle">WebGL</text>
+
+    <rect x="146" y="284" width="44" height="20" rx="10" fill="#f59e0b" opacity="0.08"/>
+    <rect x="146" y="284" width="44" height="20" rx="10" fill="none" stroke="#f59e0b" stroke-opacity="0.2" stroke-width="1"/>
+    <text x="168" y="298" font-family="monospace" font-size="8.5" fill="#fef3c7" opacity="0.5" text-anchor="middle">GSAP</text>
+
+    <!-- Top-right corner accent -->
+    <rect x="238" y="0" width="22" height="2.5" rx="1" fill="#f59e0b" opacity="0.0"/>
+    <line x1="258" y1="0" x2="258" y2="22" stroke="#f59e0b" stroke-opacity="0.4" stroke-width="1.5"/>
+    <line x1="236" y1="0" x2="258" y2="0" stroke="#f59e0b" stroke-opacity="0.4" stroke-width="1.5"/>
+  </g>
+
+  <!-- Tilt angle indicators -->
+  <g opacity="0.5">
+    <!-- Left card angle arrow -->
+    <line x1="310" y1="540" x2="360" y2="540" stroke="#f59e0b" stroke-opacity="0.3" stroke-width="1" stroke-dasharray="4 3"/>
+    <text x="335" y="556" font-family="monospace" font-size="10" fill="#f59e0b" opacity="0.4" text-anchor="middle">−6°</text>
+    <!-- Right card angle arrow -->
+    <line x1="840" y1="540" x2="890" y2="540" stroke="#f59e0b" stroke-opacity="0.3" stroke-width="1" stroke-dasharray="4 3"/>
+    <text x="865" y="556" font-family="monospace" font-size="10" fill="#f59e0b" opacity="0.4" text-anchor="middle">+6°</text>
+    <!-- Center: 0 -->
+    <text x="600" y="556" font-family="monospace" font-size="10" fill="#f59e0b" opacity="0.55" text-anchor="middle">0° — hover state</text>
+  </g>
+
+  <!-- Top label -->
+  <text x="600" y="68" font-family="'Space Grotesk', monospace" font-size="11" fill="#f59e0b" opacity="0.4" text-anchor="middle" letter-spacing="6">3D HOVER EFFECTS · GPU ACCELERATED · ZERO DEPS</text>
+
+  <!-- Corner decorations -->
+  <line x1="32" y1="32" x2="72" y2="32" stroke="#f59e0b" stroke-opacity="0.3" stroke-width="1.5"/>
+  <line x1="32" y1="32" x2="32" y2="72" stroke="#f59e0b" stroke-opacity="0.3" stroke-width="1.5"/>
+  <line x1="1168" y1="32" x2="1128" y2="32" stroke="#f59e0b" stroke-opacity="0.3" stroke-width="1.5"/>
+  <line x1="1168" y1="32" x2="1168" y2="72" stroke="#f59e0b" stroke-opacity="0.3" stroke-width="1.5"/>
+  <line x1="32" y1="643" x2="72" y2="643" stroke="#f59e0b" stroke-opacity="0.2" stroke-width="1.5"/>
+  <line x1="32" y1="643" x2="32" y2="603" stroke="#f59e0b" stroke-opacity="0.2" stroke-width="1.5"/>
+  <line x1="1168" y1="643" x2="1128" y2="643" stroke="#f59e0b" stroke-opacity="0.2" stroke-width="1.5"/>
+  <line x1="1168" y1="643" x2="1168" y2="603" stroke="#f59e0b" stroke-opacity="0.2" stroke-width="1.5"/>
+
+  <!-- Version/npm badge -->
+  <rect x="1060" y="30" width="110" height="22" rx="11" fill="#0f0904" opacity="0.9"/>
+  <rect x="1060" y="30" width="110" height="22" rx="11" fill="none" stroke="#f59e0b" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="1115" y="45" font-family="monospace" font-size="9" fill="#f59e0b" opacity="0.7" text-anchor="middle">npm · v2.4.1</text>
+</svg>

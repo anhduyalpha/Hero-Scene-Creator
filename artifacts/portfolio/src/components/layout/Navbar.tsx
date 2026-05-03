@@ -44,7 +44,7 @@ export function Navbar() {
 
   return (
     <>
-      {/* Gradient scroll progress bar */}
+      {/* Amber scroll progress bar */}
       <motion.div
         role="progressbar"
         aria-label="Page scroll progress"
@@ -54,8 +54,8 @@ export function Navbar() {
         className="fixed top-0 left-0 right-0 h-[2px] z-[60] origin-left"
         style={{
           scaleX,
-          background: "linear-gradient(to right, #7c3aed, #8b5cf6, #22d3ee)",
-          boxShadow: "0 0 10px rgba(139,92,246,0.5)",
+          background: "linear-gradient(to right, #b45309, #f59e0b, #dc2626)",
+          boxShadow: "0 0 10px rgba(245,158,11,0.5)",
         }}
       />
 
@@ -64,30 +64,48 @@ export function Navbar() {
           isScrolled ? "py-3" : "py-6"
         }`}
         style={isScrolled ? {
-          background: "linear-gradient(180deg, rgba(12,10,22,0.82) 0%, rgba(8,7,16,0.78) 100%)",
+          background: "linear-gradient(180deg, rgba(10,6,2,0.88) 0%, rgba(6,4,2,0.84) 100%)",
           backdropFilter: "blur(24px) saturate(180%)",
           WebkitBackdropFilter: "blur(24px) saturate(180%)",
-          borderBottom: "1px solid rgba(139,92,246,0.12)",
-          boxShadow: "0 8px 32px rgba(0,0,0,0.4), inset 0 -1px 0 rgba(139,92,246,0.08)",
+          borderBottom: "1px solid rgba(245,158,11,0.12)",
+          boxShadow: "0 8px 32px rgba(0,0,0,0.6), inset 0 -1px 0 rgba(245,158,11,0.08)",
         } : {}}
       >
         <div className="container mx-auto px-6 flex items-center justify-between">
-          {/* Gradient logo */}
           <a
             href="#hero"
-            className="text-2xl tracking-tighter transition-opacity duration-200 hover:opacity-80 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-4 rounded-sm"
-            style={{ fontFamily: "var(--app-font-display)", fontWeight: 800 }}
+            className="flex items-center gap-1.5 tracking-tight transition-all duration-200 hover:opacity-85 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-4 rounded-sm group"
             aria-label="AlphaD — back to top"
           >
             <span
+              className="text-2xl font-black"
               style={{
-                background: "linear-gradient(135deg, #e2d4ff 0%, #c4b5fd 25%, #8b5cf6 60%, #22d3ee 100%)",
+                fontFamily: "'Space Grotesk', sans-serif",
+                background: "linear-gradient(135deg, #fef3c7 0%, #f59e0b 55%, #dc2626 100%)",
                 WebkitBackgroundClip: "text",
                 backgroundClip: "text",
                 color: "transparent",
               }}
             >
-              AlphaD
+              α
+            </span>
+            <span
+              className="text-xl font-bold"
+              style={{
+                fontFamily: "'Space Grotesk', sans-serif",
+                background: "linear-gradient(135deg, #fde68a 0%, #f59e0b 70%, #b45309 100%)",
+                WebkitBackgroundClip: "text",
+                backgroundClip: "text",
+                color: "transparent",
+              }}
+            >
+              D
+            </span>
+            <span
+              className="text-[10px] font-mono tracking-[0.2em] uppercase self-end mb-0.5 opacity-50 group-hover:opacity-70 transition-opacity"
+              style={{ color: "#f59e0b" }}
+            >
+              ·AlphaD
             </span>
           </a>
 
@@ -113,18 +131,17 @@ export function Navbar() {
                       onMouseEnter={(e) => !isActive && ((e.currentTarget as HTMLElement).style.color = "hsl(var(--foreground))")}
                       onMouseLeave={(e) => !isActive && ((e.currentTarget as HTMLElement).style.color = "hsl(var(--muted-foreground))")}
                     >
-                      <span className="text-[10px]" style={{ color: "rgba(139,92,246,0.6)" }}>0{i + 1}.</span>
+                      <span className="text-[10px]" style={{ color: "rgba(245,158,11,0.6)" }}>0{i + 1}.</span>
                       {link.name}
                     </a>
 
-                    {/* Gradient active underline */}
                     {isActive && (
                       <motion.div
                         layoutId="nav-active"
                         className="absolute -bottom-1 left-0 right-0 h-[2px] rounded-full"
                         style={{
-                          background: "linear-gradient(to right, #8b5cf6, #22d3ee)",
-                          boxShadow: "0 0 8px rgba(139,92,246,0.5)",
+                          background: "linear-gradient(to right, #f59e0b, #dc2626)",
+                          boxShadow: "0 0 8px rgba(245,158,11,0.5)",
                         }}
                         transition={{ type: "spring", stiffness: 380, damping: 30 }}
                       />
@@ -143,19 +160,19 @@ export function Navbar() {
                 href="#"
                 className="relative overflow-hidden group px-4 py-2 font-mono text-sm text-primary rounded-lg focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 transition-all duration-300"
                 style={{
-                  background: "linear-gradient(135deg, rgba(139,92,246,0.12) 0%, rgba(109,40,217,0.08) 100%)",
-                  border: "1px solid rgba(139,92,246,0.28)",
+                  background: "linear-gradient(135deg, rgba(245,158,11,0.12) 0%, rgba(180,83,9,0.08) 100%)",
+                  border: "1px solid rgba(245,158,11,0.28)",
                   boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04)",
                   touchAction: "manipulation",
                 }}
                 onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLElement).style.background = "linear-gradient(135deg, rgba(139,92,246,0.20) 0%, rgba(109,40,217,0.14) 100%)";
-                  (e.currentTarget as HTMLElement).style.borderColor = "rgba(139,92,246,0.50)";
-                  (e.currentTarget as HTMLElement).style.boxShadow = "0 0 16px rgba(139,92,246,0.2), inset 0 1px 0 rgba(255,255,255,0.06)";
+                  (e.currentTarget as HTMLElement).style.background = "linear-gradient(135deg, rgba(245,158,11,0.20) 0%, rgba(180,83,9,0.14) 100%)";
+                  (e.currentTarget as HTMLElement).style.borderColor = "rgba(245,158,11,0.50)";
+                  (e.currentTarget as HTMLElement).style.boxShadow = "0 0 16px rgba(245,158,11,0.2), inset 0 1px 0 rgba(255,255,255,0.06)";
                 }}
                 onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLElement).style.background = "linear-gradient(135deg, rgba(139,92,246,0.12) 0%, rgba(109,40,217,0.08) 100%)";
-                  (e.currentTarget as HTMLElement).style.borderColor = "rgba(139,92,246,0.28)";
+                  (e.currentTarget as HTMLElement).style.background = "linear-gradient(135deg, rgba(245,158,11,0.12) 0%, rgba(180,83,9,0.08) 100%)";
+                  (e.currentTarget as HTMLElement).style.borderColor = "rgba(245,158,11,0.28)";
                   (e.currentTarget as HTMLElement).style.boxShadow = "inset 0 1px 0 rgba(255,255,255,0.04)";
                 }}
                 aria-label="Download resume"
@@ -185,11 +202,11 @@ export function Navbar() {
             exit={{ opacity: 0, y: -16 }}
             className="absolute top-full left-0 right-0 py-4 md:hidden"
             style={{
-              background: "linear-gradient(180deg, rgba(12,10,22,0.95) 0%, rgba(8,7,18,0.92) 100%)",
+              background: "linear-gradient(180deg, rgba(10,6,2,0.97) 0%, rgba(6,4,2,0.94) 100%)",
               backdropFilter: "blur(24px) saturate(180%)",
               WebkitBackdropFilter: "blur(24px) saturate(180%)",
-              borderBottom: "1px solid rgba(139,92,246,0.14)",
-              boxShadow: "0 16px 40px rgba(0,0,0,0.5)",
+              borderBottom: "1px solid rgba(245,158,11,0.14)",
+              boxShadow: "0 16px 40px rgba(0,0,0,0.7)",
             }}
           >
             <nav className="flex flex-col items-center gap-2 py-6" aria-label="Mobile navigation">
@@ -209,8 +226,8 @@ export function Navbar() {
                 href="#"
                 className="mt-4 px-8 py-3 font-mono text-primary rounded-xl focus-visible:outline-2 focus-visible:outline-primary transition-all duration-200"
                 style={{
-                  background: "linear-gradient(135deg, rgba(139,92,246,0.15) 0%, rgba(109,40,217,0.10) 100%)",
-                  border: "1px solid rgba(139,92,246,0.30)",
+                  background: "linear-gradient(135deg, rgba(245,158,11,0.15) 0%, rgba(180,83,9,0.10) 100%)",
+                  border: "1px solid rgba(245,158,11,0.30)",
                   touchAction: "manipulation",
                 }}
               >

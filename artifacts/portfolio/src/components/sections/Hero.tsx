@@ -1,63 +1,105 @@
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
-import { ArrowRight } from "lucide-react";
-import gsap from "gsap";
+import { useState, useEffect, useRef } from "react";
+import { ArrowRight, Terminal, Github, Twitter, Linkedin, Code2, Zap, Star } from "lucide-react";
+import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 
 const TITLES = [
-  "Full Stack Engineer.",
-  "Open Source Contributor.",
-  "Problem Solver.",
-  "Builder of Things.",
+  "Full-Stack Engineer",
+  "System Architect",
+  "Open Source Creator",
+  "UI/UX Designer",
 ];
 
-function MagneticCTA({
-  href,
-  children,
-  className,
-}: {
-  href: string;
-  children: React.ReactNode;
-  className: string;
-}) {
-  const ref = useRef<HTMLAnchorElement>(null);
-  const innerRef = useRef<HTMLSpanElement>(null);
+function Avatar3D() {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const rotateX = useMotionValue(0);
+  const rotateY = useMotionValue(0);
+  const springX = useSpring(rotateX, { stiffness: 180, damping: 28 });
+  const springY = useSpring(rotateY, { stiffness: 180, damping: 28 });
 
-  useEffect(() => {
-    const el = ref.current;
-    const inner = innerRef.current;
-    if (!el || !inner) return;
-    const strength = 0.35;
-    const innerStrength = 0.55;
-    const onMove = (e: MouseEvent) => {
-      const rect = el.getBoundingClientRect();
-      const cx = rect.left + rect.width / 2;
-      const cy = rect.top + rect.height / 2;
-      const dx = e.clientX - cx;
-      const dy = e.clientY - cy;
-      gsap.to(el,    { x: dx * strength,      y: dy * strength,      duration: 0.4, ease: "power2.out" });
-      gsap.to(inner, { x: dx * innerStrength, y: dy * innerStrength, duration: 0.4, ease: "power2.out" });
-    };
-    const onLeave = () => {
-      gsap.to(el,    { x: 0, y: 0, duration: 0.7, ease: "elastic.out(1, 0.4)" });
-      gsap.to(inner, { x: 0, y: 0, duration: 0.7, ease: "elastic.out(1, 0.4)" });
-    };
-    const area = el.parentElement!;
-    area.addEventListener("mousemove", onMove);
-    area.addEventListener("mouseleave", onLeave);
-    return () => {
-      area.removeEventListener("mousemove", onMove);
-      area.removeEventListener("mouseleave", onLeave);
-    };
-  }, []);
+  const glowX = useTransform(springY, [-15, 15], ["20%", "80%"]);
+  const glowY = useTransform(springX, [-15, 15], ["20%", "80%"]);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const dx = (e.clientX - cx) / (rect.width / 2);
+    const dy = (e.clientY - cy) / (rect.height / 2);
+    rotateY.set(dx * 14);
+    rotateX.set(-dy * 14);
+  };
+
+  const handleMouseLeave = () => {
+    rotateX.set(0);
+    rotateY.set(0);
+  };
 
   return (
-    <div className="p-12 -m-12 inline-block">
-      <a ref={ref} href={href} className={className}>
-        <span ref={innerRef} className="relative z-10 flex items-center gap-3">
-          {children}
-        </span>
-      </a>
-    </div>
+    <motion.div
+      ref={cardRef}
+      className="relative w-72 h-72 sm:w-96 sm:h-96 cursor-none"
+      style={{ perspective: 900, transformStyle: "preserve-3d" }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      initial={{ opacity: 0, scale: 0.88 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.9, delay: 0.2 }}
+    >
+      <motion.div
+        className="w-full h-full rounded-2xl overflow-hidden ember-glass relative"
+        style={{
+          rotateX: springX,
+          rotateY: springY,
+          transformStyle: "preserve-3d",
+          boxShadow: "0 0 40px rgba(245,158,11,0.15), 0 32px 64px rgba(0,0,0,0.7)",
+        }}
+        whileHover={{ boxShadow: "0 0 60px rgba(245,158,11,0.28), 0 40px 80px rgba(0,0,0,0.8)" }}
+        transition={{ duration: 0.4 }}
+      >
+        {/* Glow spot that tracks mouse */}
+        <motion.div
+          className="absolute inset-0 z-10 pointer-events-none rounded-2xl"
+          style={{
+            background: `radial-gradient(circle at ${glowX} ${glowY}, rgba(245,158,11,0.22) 0%, rgba(220,38,38,0.10) 40%, transparent 70%)`,
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-tr from-secondary/20 to-transparent z-10 mix-blend-overlay pointer-events-none" />
+        <img
+          src={`${import.meta.env.BASE_URL}avatar-ember.png`}
+          alt="Anh Duy"
+          className="w-full h-full object-cover grayscale-[20%] transition-all duration-700"
+          draggable={false}
+        />
+        {/* Corner accents */}
+        <div className="absolute top-0 left-0 w-12 h-12 border-t-2 border-l-2 border-primary shadow-[0_0_15px_var(--color-primary)] opacity-80 z-20 pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-12 h-12 border-b-2 border-r-2 border-secondary shadow-[0_0_15px_var(--color-secondary)] opacity-80 z-20 pointer-events-none" />
+        {/* Scanline sheen */}
+        <motion.div
+          className="absolute left-0 right-0 h-[2px] z-20 pointer-events-none"
+          style={{ background: "linear-gradient(to right, transparent, rgba(245,158,11,0.5), transparent)" }}
+          animate={{ top: ["-2%", "105%"] }}
+          transition={{ duration: 3.5, repeat: Infinity, ease: "linear", repeatDelay: 2 }}
+        />
+      </motion.div>
+
+      {/* Floating handle badge */}
+      <motion.div
+        className="absolute -bottom-5 -right-4 z-30 px-3 py-1.5 rounded-full font-mono text-xs font-bold tracking-wider"
+        style={{
+          background: "linear-gradient(135deg, rgba(245,158,11,0.2) 0%, rgba(180,83,9,0.15) 100%)",
+          border: "1px solid rgba(245,158,11,0.45)",
+          boxShadow: "0 0 16px rgba(245,158,11,0.3)",
+          backdropFilter: "blur(12px)",
+          color: "#f59e0b",
+        }}
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.2, duration: 0.5 }}
+      >
+        @AlphaD
+      </motion.div>
+    </motion.div>
   );
 }
 
@@ -65,270 +107,196 @@ export function Hero() {
   const [titleIndex, setTitleIndex] = useState(0);
   const [displayText, setDisplayText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
-  const prefersReduced =
-    typeof window !== "undefined" &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   useEffect(() => {
-    if (prefersReduced) { setDisplayText(TITLES[0]); return; }
-    let timeout: ReturnType<typeof setTimeout>;
-    const current = TITLES[titleIndex];
-    if (isDeleting) {
-      if (displayText.length > 0) {
-        timeout = setTimeout(() => setDisplayText(current.slice(0, displayText.length - 1)), 36);
-      } else {
+    const currentTitle = TITLES[titleIndex];
+    const typeSpeed = isDeleting ? 45 : 90;
+
+    const timeout = setTimeout(() => {
+      if (!isDeleting && displayText === currentTitle) {
+        setTimeout(() => setIsDeleting(true), 2200);
+        return;
+      }
+      if (isDeleting && displayText === "") {
         setIsDeleting(false);
-        setTitleIndex((p) => (p + 1) % TITLES.length);
+        setTitleIndex((prev) => (prev + 1) % TITLES.length);
+        return;
       }
-    } else {
-      if (displayText.length < current.length) {
-        timeout = setTimeout(() => setDisplayText(current.slice(0, displayText.length + 1)), 65);
-      } else {
-        timeout = setTimeout(() => setIsDeleting(true), 2400);
-      }
-    }
+      setDisplayText((prev) =>
+        isDeleting ? prev.slice(0, -1) : currentTitle.slice(0, prev.length + 1)
+      );
+    }, typeSpeed);
+
     return () => clearTimeout(timeout);
-  }, [displayText, isDeleting, titleIndex, prefersReduced]);
-
-  /* Mouse-parallax springs */
-  const mx = useMotionValue(0.5);
-  const my = useMotionValue(0.5);
-  const imgX  = useSpring(useTransform(mx, [0,1], [-14, 14]), { damping: 30, stiffness: 70 });
-  const imgY  = useSpring(useTransform(my, [0,1], [-10, 10]), { damping: 30, stiffness: 70 });
-  const imgRX = useSpring(useTransform(my, [0,1], [4, -4]),   { damping: 30, stiffness: 70 });
-  const imgRY = useSpring(useTransform(mx, [0,1], [-6,  6]),  { damping: 30, stiffness: 70 });
-
-  const handleMove = (e: React.MouseEvent<HTMLElement>) => {
-    const r = e.currentTarget.getBoundingClientRect();
-    mx.set((e.clientX - r.left) / r.width);
-    my.set((e.clientY - r.top)  / r.height);
-  };
+  }, [displayText, isDeleting, titleIndex]);
 
   return (
-    <section
-      id="hero"
-      className="relative min-h-[100dvh] flex items-center overflow-hidden"
-      onMouseMove={handleMove}
-    >
-      {/* ── Ambient gradient orbs ─────────────────────────────── */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
-      >
-        {/* Violet orb — lower left */}
-        <div
-          className="absolute"
-          style={{
-            width: "60vw",
-            height: "60vw",
-            left: "-15vw",
-            bottom: "-10vw",
-            background: "radial-gradient(ellipse, rgba(139,92,246,0.18) 0%, rgba(109,40,217,0.08) 40%, transparent 70%)",
-            filter: "blur(60px)",
-          }}
-        />
-        {/* Cyan orb — upper right */}
-        <div
-          className="absolute"
-          style={{
-            width: "40vw",
-            height: "40vw",
-            right: "5vw",
-            top: "5vw",
-            background: "radial-gradient(ellipse, rgba(6,182,212,0.12) 0%, transparent 65%)",
-            filter: "blur(70px)",
-          }}
-        />
-        {/* Pink micro-orb — center */}
-        <div
-          className="absolute"
-          style={{
-            width: "22vw",
-            height: "22vw",
-            left: "38%",
-            top: "30%",
-            background: "radial-gradient(ellipse, rgba(192,132,252,0.10) 0%, transparent 65%)",
-            filter: "blur(50px)",
-          }}
-        />
-      </div>
+    <section id="hero" className="min-h-[90vh] flex flex-col justify-center container mx-auto px-6 py-20 pt-32">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
 
-      {/* ── Illustrated avatar — right half (desktop) ───────── */}
-      <motion.div
-        className="absolute right-0 top-0 bottom-0 w-[55%] pointer-events-none z-0 hidden lg:block"
-        style={{ x: imgX, y: imgY, rotateX: imgRX, rotateY: imgRY, perspective: 1000 }}
-        initial={{ opacity: 0, x: 60 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
-      >
-        {/* Left-edge gradient — blends art into the text column */}
-        <div
-          className="absolute inset-0 z-10"
-          style={{
-            background: "linear-gradient(to right, #050505 0%, #050505 5%, rgba(5,5,5,0.7) 28%, rgba(5,5,5,0.15) 55%, transparent 100%)",
-          }}
-        />
-        <div
-          className="absolute inset-0 z-10"
-          style={{ background: "linear-gradient(to top, #050505 0%, transparent 22%)" }}
-        />
-        <div
-          className="absolute inset-0 z-10"
-          style={{ background: "linear-gradient(to bottom, #050505 0%, transparent 16%)" }}
-        />
-
-        <img
-          src="/avatar-illustrated.png"
-          alt="Anh Duy — illustrated developer avatar"
-          width="880"
-          height="1100"
-          fetchPriority="high"
-          className="absolute inset-0 w-full h-full object-cover object-center"
-          style={{ mixBlendMode: "luminosity", opacity: 0.92 }}
-          draggable={false}
-        />
-        <img
-          src="/avatar-illustrated.png"
-          alt=""
-          aria-hidden="true"
-          width="880"
-          height="1100"
-          className="absolute inset-0 w-full h-full object-cover object-center"
-          style={{ opacity: 0.55 }}
-          draggable={false}
-        />
-
-        {/* Ambient glow dot */}
-        <div
-          className="absolute bottom-[15%] right-[20%] w-48 h-48 rounded-full z-0"
-          style={{
-            background: "radial-gradient(circle, rgba(139,92,246,0.35) 0%, transparent 70%)",
-            filter: "blur(30px)",
-          }}
-          aria-hidden="true"
-        />
-      </motion.div>
-
-      {/* ── Text content ──────────────────────────────────────── */}
-      <div className="container relative z-10 mx-auto px-6 flex flex-col items-start pt-28 pb-20">
+        {/* Left: Text */}
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          className="w-full max-w-full md:max-w-[58%] lg:max-w-xl"
+          transition={{ duration: 0.7 }}
+          className="flex flex-col gap-6 order-2 lg:order-1"
         >
-          <motion.p
-            className="font-mono text-[11px] tracking-[0.4em] text-primary uppercase mb-6"
-            initial={{ opacity: 0, x: -16 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            Hi, my name is
-          </motion.p>
+          <div className="flex items-center gap-2 font-mono text-sm" style={{ color: "#f59e0b" }}>
+            <Terminal className="w-4 h-4" aria-hidden="true" />
+            <span>Hello, World. I am</span>
+          </div>
 
-          {/* Gradient name */}
           <h1
-            className="leading-[0.92] mb-5"
-            style={{
-              fontFamily: "var(--app-font-display)",
-              fontWeight: 800,
-              fontSize: "clamp(3.5rem, 10vw, 7.5rem)",
-              letterSpacing: "-0.04em",
-            }}
+            className="text-5xl sm:text-7xl lg:text-8xl font-bold leading-tight tracking-tight"
+            style={{ fontFamily: "'Space Grotesk', sans-serif" }}
           >
-            <span className="gradient-text-vivid">Anh Duy.</span>
+            <span
+              style={{
+                background: "linear-gradient(135deg, #fef3c7 0%, #fde68a 20%, #f59e0b 55%, #dc2626 100%)",
+                WebkitBackgroundClip: "text",
+                backgroundClip: "text",
+                color: "transparent",
+              }}
+            >
+              Anh Duy
+            </span>
           </h1>
 
-          <h2
-            className="text-muted-foreground leading-tight mb-8 min-h-[1.2em]"
-            style={{
-              fontFamily: "var(--app-font-display)",
-              fontWeight: 700,
-              fontSize: "clamp(1.5rem, 4.5vw, 3.5rem)",
-              letterSpacing: "-0.025em",
-            }}
-          >
-            <span>{displayText}</span>
-            <span
-              aria-hidden="true"
-              className="inline-block w-[3px] h-[0.8em] bg-primary ml-1 align-middle rounded-full"
-              style={{ animation: prefersReduced ? "none" : "blink 1s step-end infinite" }}
-            />
-          </h2>
+          {/* Nickname tag */}
+          <div className="flex items-center gap-3 -mt-2">
+            <div
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-mono text-sm font-semibold"
+              style={{
+                background: "linear-gradient(135deg, rgba(245,158,11,0.18) 0%, rgba(180,83,9,0.10) 100%)",
+                border: "1px solid rgba(245,158,11,0.4)",
+                boxShadow: "0 0 12px rgba(245,158,11,0.2)",
+                color: "#f59e0b",
+              }}
+            >
+              <span style={{ fontSize: "14px" }}>α</span>
+              AlphaD
+            </div>
+            <div className="h-[1px] w-12" style={{ background: "linear-gradient(to right, rgba(245,158,11,0.4), transparent)" }} />
+          </div>
 
-          <p className="text-base md:text-lg text-muted-foreground max-w-md mb-14 leading-[1.75]">
-            I build exceptional digital experiences — fast, accessible, and visually
-            compelling. Currently focused on distributed systems and developer tooling.
+          <div className="text-2xl sm:text-3xl text-foreground/80 h-10 flex items-center" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+            <span>{displayText}</span>
+            <span className="w-[3px] h-[1em] bg-primary ml-1 animate-blink shadow-[0_0_8px_var(--color-primary)]" />
+          </div>
+
+          <p className="text-muted-foreground text-lg max-w-xl leading-relaxed mt-1">
+            Forging scalable systems and beautiful interfaces in the midnight hours.
+            I build resilient architectures that handle millions of requests without breaking a sweat.
           </p>
 
-          {/* Mobile avatar */}
-          <motion.div
-            className="lg:hidden flex justify-center mb-10"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.7, delay: 0.4 }}
-          >
-            <div className="relative w-48 h-48">
-              {/* Gradient ring */}
-              <div
-                className="absolute -inset-0.5 rounded-full"
-                style={{
-                  background: "linear-gradient(135deg, rgba(139,92,246,0.8) 0%, rgba(6,182,212,0.4) 100%)",
-                  filter: "blur(2px)",
-                }}
-                aria-hidden="true"
-              />
-              <div className="absolute inset-0 rounded-full border-2 border-primary/40" />
-              <div className="absolute -inset-1 rounded-full border border-primary/15" />
-              <div className="absolute inset-0 rounded-full bg-primary/10 blur-xl" />
-              <img
-                src="/avatar-illustrated.png"
-                alt="Anh Duy"
-                width="192"
-                height="192"
-                className="relative w-full h-full object-cover object-top rounded-full z-10"
-                style={{ filter: "drop-shadow(0 0 20px rgba(139,92,246,0.5))" }}
-                draggable={false}
-              />
-            </div>
-          </motion.div>
-
-          <div className="flex flex-wrap gap-4 items-center">
-            {/* Primary: gradient CTA */}
-            <MagneticCTA
+          <div className="flex flex-wrap items-center gap-4 mt-6">
+            <motion.a
               href="#projects"
-              className="gradient-btn inline-flex items-center gap-3 text-white px-8 py-4 font-semibold text-sm tracking-wide rounded-xl"
+              className="group relative px-6 py-3 rounded-md font-semibold flex items-center gap-2 overflow-hidden"
+              style={{
+                background: "linear-gradient(135deg, #f59e0b 0%, #b45309 100%)",
+                color: "#060402",
+                boxShadow: "0 0 20px rgba(245,158,11,0.35)",
+              }}
+              whileHover={{ scale: 1.04, boxShadow: "0 0 32px rgba(245,158,11,0.55)" }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ duration: 0.18 }}
             >
-              View My Work
-              <ArrowRight className="w-4 h-4" aria-hidden="true" />
-            </MagneticCTA>
+              <span className="relative z-10">View Projects</span>
+              <ArrowRight className="w-4 h-4 relative z-10 transition-transform duration-200 group-hover:translate-x-1" />
+            </motion.a>
 
-            {/* Secondary: glass panel with gradient border */}
-            <MagneticCTA
+            <motion.a
               href="#contact"
-              className="glass-panel gradient-border inline-flex items-center gap-2 text-muted-foreground px-7 py-4 font-mono text-sm rounded-xl hover:text-foreground transition-colors duration-300"
+              className="group px-6 py-3 rounded-md ember-glass font-medium flex items-center gap-2"
+              style={{ color: "#fef3c7", borderColor: "rgba(245,158,11,0.35)" }}
+              whileHover={{
+                scale: 1.04,
+                boxShadow: "0 0 20px rgba(245,158,11,0.2)",
+                borderColor: "rgba(245,158,11,0.6)",
+              }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ duration: 0.18 }}
             >
-              Get in touch
-            </MagneticCTA>
+              Contact Me
+            </motion.a>
+          </div>
+
+          <div className="flex items-center gap-2 mt-6">
+            {[
+              { icon: Github, label: "GitHub" },
+              { icon: Twitter, label: "Twitter" },
+              { icon: Linkedin, label: "LinkedIn" },
+            ].map(({ icon: Icon, label }) => (
+              <motion.a
+                key={label}
+                href="#"
+                aria-label={label}
+                className="w-10 h-10 flex items-center justify-center rounded-full text-muted-foreground"
+                style={{ background: "rgba(245,158,11,0.04)", border: "1px solid rgba(245,158,11,0.12)" }}
+                whileHover={{
+                  color: "#f59e0b",
+                  backgroundColor: "rgba(245,158,11,0.12)",
+                  borderColor: "rgba(245,158,11,0.4)",
+                  scale: 1.12,
+                  boxShadow: "0 0 14px rgba(245,158,11,0.3)",
+                }}
+                whileTap={{ scale: 0.92 }}
+                transition={{ duration: 0.18 }}
+              >
+                <Icon className="w-4 h-4" />
+              </motion.a>
+            ))}
           </div>
         </motion.div>
+
+        {/* Right: 3D Avatar */}
+        <div className="order-1 lg:order-2 flex justify-center lg:justify-end">
+          <Avatar3D />
+        </div>
       </div>
 
-      {/* Scroll hint */}
+      {/* Stat cards */}
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.8, duration: 0.8 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-        aria-hidden="true"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, delay: 0.5 }}
+        className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-20"
       >
-        <span className="font-mono text-[10px] text-muted-foreground tracking-[0.4em] uppercase">Scroll</span>
-        <motion.div
-          animate={prefersReduced ? {} : { y: [0, 6, 0] }}
-          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-        >
-          <ArrowRight className="w-3.5 h-3.5 text-muted-foreground rotate-90" />
-        </motion.div>
+        {[
+          { label: "Experience", value: "5+ Yrs", icon: Zap },
+          { label: "Projects",   value: "42",     icon: Code2 },
+          { label: "Commits",    value: "1.8k",   icon: Github },
+          { label: "Rating",     value: "5.0 ★",  icon: Star },
+        ].map((stat, i) => (
+          <motion.div
+            key={i}
+            className="ember-glass p-5 md:p-6 rounded-xl flex flex-col gap-3 group"
+            whileHover={{
+              borderColor: "rgba(245,158,11,0.5)",
+              boxShadow: "0 0 24px rgba(245,158,11,0.15), 0 8px 32px rgba(0,0,0,0.4)",
+              y: -3,
+            }}
+            transition={{ duration: 0.2 }}
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-muted-foreground font-mono text-xs uppercase tracking-wider">{stat.label}</span>
+              <stat.icon className="w-4 h-4 text-primary/50 group-hover:text-primary transition-colors duration-200" aria-hidden="true" />
+            </div>
+            <div
+              className="text-3xl font-bold"
+              style={{
+                fontFamily: "'Space Grotesk', sans-serif",
+                background: "linear-gradient(135deg, #fef3c7 0%, #f59e0b 100%)",
+                WebkitBackgroundClip: "text",
+                backgroundClip: "text",
+                color: "transparent",
+              }}
+            >
+              {stat.value}
+            </div>
+          </motion.div>
+        ))}
       </motion.div>
     </section>
   );

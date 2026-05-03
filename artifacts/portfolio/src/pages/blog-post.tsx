@@ -53,7 +53,14 @@ export default function BlogPost() {
               </Link>
 
               <div className="flex items-center gap-3 mb-6">
-                <span className="font-mono text-xs px-2.5 py-1 bg-primary/10 text-primary border border-primary/20 rounded-sm">
+                <span
+                  className="font-mono text-xs px-2.5 py-1 rounded-sm border"
+                  style={{
+                    background: "linear-gradient(135deg, rgba(245,158,11,0.18) 0%, rgba(180,83,9,0.10) 100%)",
+                    borderColor: "rgba(245,158,11,0.30)",
+                    color: "rgba(254,243,199,0.9)",
+                  }}
+                >
                   {post.tag}
                 </span>
                 <time dateTime={post.date} className="font-mono text-sm text-muted-foreground">
@@ -64,8 +71,8 @@ export default function BlogPost() {
               </div>
 
               <h1
-                className="text-4xl md:text-5xl font-black leading-[1.05] tracking-tight mb-8"
-                style={{ fontFamily: "var(--app-font-display)" }}
+                className="text-4xl md:text-5xl font-black leading-[1.05] tracking-tight mb-8 text-foreground"
+                style={{ fontFamily: "'Space Grotesk', sans-serif" }}
               >
                 {post.title}
               </h1>

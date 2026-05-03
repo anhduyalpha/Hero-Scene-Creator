@@ -3,13 +3,13 @@ import { motion, useScroll, useTransform } from "framer-motion";
 
 const items = [
   "Full Stack Engineer",
-  "Open Source Contributor",
   "Distributed Systems",
+  "Open Source Creator",
   "TypeScript",
   "Go",
-  "React",
+  "Rust",
   "Kubernetes",
-  "Builder",
+  "System Architect",
 ];
 
 const Row = ({ direction = 1, speed = 40 }: { direction?: 1 | -1; speed?: number }) => {

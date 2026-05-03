@@ -67,7 +67,6 @@ func (w *Worker) run(ctx context.Context) {
             if err := w.process(ctx, msg); err == nil {
                 w.redis.XAck(ctx, w.stream, w.group, msg.ID)
             }
-            // On failure: message stays in PEL for requeuing
         }
     }
 }
@@ -78,7 +77,6 @@ func (w *Worker) run(ctx context.Context) {
 Jobs that fail repeatedly get moved to a dead-letter stream via a background reclaimer:
 
 ```go
-// Reclaim messages pending > 30 seconds
 func (r *Reclaimer) run(ctx context.Context) {
     ticker := time.NewTicker(10 * time.Second)
     for range ticker.C {
@@ -117,13 +115,9 @@ After deploying this system, our numbers:
 | Job throughput | 2M/day | 12M/day |
 | Worker crash recovery | Manual | Automatic (< 30s) |
 
-The combination of consumer groups, the PEL, and our reclaimer gave us exactly-once semantics without a distributed transaction in sight.
-
 ## Lessons Learned
 
-1. **Set `MAXLEN` on your streams** — unbounded streams eat memory fast. We use `MAXLEN ~ 1000000` with approximate trimming (`~`) for performance.
+1. **Set `MAXLEN` on your streams** — unbounded streams eat memory fast.
 2. **Consumer IDs must be unique per process** — we use `hostname + PID`.
 3. **Always monitor PEL depth** — a growing PEL means your workers are dying silently.
 4. **Idempotency keys belong in your handler, not the queue** — the queue guarantees at-least-once; your handler must handle duplicates gracefully.
-
-The full source code is available on GitHub. If you're building something similar and hit snags, feel free to reach out.

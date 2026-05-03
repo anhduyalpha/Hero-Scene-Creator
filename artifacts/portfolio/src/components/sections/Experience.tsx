@@ -1,164 +1,92 @@
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
-
-const experiences = [
-  {
-    id: "stripe",
-    role: "Senior Software Engineer",
-    company: "Stripe",
-    initial: "S",
-    color: "#635BFF",
-    date: "2022 - Present",
-    description: "Leading the core payments team. Architected a distributed ledger system reducing latency by 40%. Mentored 5 mid-level engineers.",
-  },
-  {
-    id: "cloudflare",
-    role: "Software Engineer",
-    company: "Cloudflare",
-    initial: "C",
-    color: "#F38020",
-    date: "2019 - 2022",
-    description: "Developed features for the Edge Computing platform. Built Rust services handling millions of requests per second.",
-  },
-  {
-    id: "twilio",
-    role: "Junior Engineer",
-    company: "Twilio",
-    initial: "T",
-    color: "#F22F46",
-    date: "2017 - 2019",
-    description: "Contributed to the Voice API. Improved test coverage by 30% and participated in the on-call rotation.",
-  },
-  {
-    id: "github",
-    role: "Intern",
-    company: "GitHub",
-    initial: "G",
-    color: "#a78bfa",
-    date: "Summer 2016",
-    description: "Worked on GitHub Actions prototype. Implemented internal tooling for CI/CD pipelines.",
-  },
-];
+import React from "react";
+import { motion } from "framer-motion";
 
 export function Experience() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start center", "end center"],
-  });
-
-  const scaleY = useTransform(scrollYProgress, [0, 1], [0, 1]);
+  const experiences = [
+    {
+      role: "Staff Engineer",
+      company: "Nexus Systems",
+      period: "2021 - Present",
+      description: "Architected and implemented a high-throughput distributed task queue handling 5M+ events per day. Led the migration from monolithic architecture to Go-based microservices, reducing latency by 40% and infrastructure costs by 25%. Mentored a team of 8 engineers.",
+      tech: ["Go", "Kubernetes", "PostgreSQL", "Redis", "gRPC"]
+    },
+    {
+      role: "Senior Full-Stack Engineer",
+      company: "Vanguard Tech",
+      period: "2018 - 2021",
+      description: "Spearheaded the development of a real-time collaborative workspace used by 100k+ MAU. Implemented operational transforms for conflict-free concurrent editing. Built the frontend rendering engine using React and WebGL for complex data visualizations.",
+      tech: ["React", "Node.js", "WebSockets", "MongoDB", "AWS"]
+    },
+    {
+      role: "Software Engineer",
+      company: "Aether Dynamics",
+      period: "2016 - 2018",
+      description: "Developed core features for a cloud-based logistics platform. Optimized database queries and caching strategies to improve dashboard load times by 3x. Implemented comprehensive test suites increasing coverage to 85%.",
+      tech: ["JavaScript", "Python", "React", "PostgreSQL", "Docker"]
+    }
+  ];
 
   return (
-    <section id="experience" className="py-32 bg-background relative z-10">
-      <div className="container mx-auto px-6 max-w-4xl">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6 }}
-          className="mb-16"
-        >
-          <h2 className="text-3xl md:text-4xl font-bold flex items-center gap-4">
-            <span className="gradient-text font-mono text-xl font-normal">03.</span>
-            Where I&apos;ve Worked
-            <div
-              className="h-[1px] flex-1 max-w-xs ml-4"
-              style={{ background: "linear-gradient(to right, rgba(139,92,246,0.5), transparent)" }}
-              aria-hidden="true"
-            />
-          </h2>
-        </motion.div>
+    <section id="experience" className="py-24 container mx-auto px-6">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        className="mb-16"
+      >
+        <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 flex items-center gap-3">
+          <span className="text-secondary font-mono text-xl font-normal">03.</span> 
+          Experience
+        </h2>
+        <div className="w-20 h-1 bg-primary shadow-[0_0_10px_var(--color-primary)]"></div>
+      </motion.div>
 
-        <div className="relative pl-8 md:pl-0" ref={containerRef}>
-          {/* Timeline track */}
-          <div className="absolute left-[39px] md:left-1/2 top-0 bottom-0 w-[2px] md:-translate-x-1/2"
-            style={{ background: "rgba(255,255,255,0.06)" }}
-          />
-          {/* Scroll-driven gradient fill */}
+      <div className="max-w-4xl mx-auto">
+        {experiences.map((exp, index) => (
           <motion.div
-            className="absolute left-[39px] md:left-1/2 top-0 bottom-0 w-[2px] md:-translate-x-1/2 origin-top"
-            style={{
-              scaleY,
-              background: "linear-gradient(to bottom, rgba(139,92,246,0.9) 0%, rgba(6,182,212,0.6) 60%, rgba(139,92,246,0.4) 100%)",
-              boxShadow: "0 0 8px rgba(139,92,246,0.4)",
-            }}
-          />
+            key={index}
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: index * 0.1 }}
+            className="relative pl-8 md:pl-0 mb-12 last:mb-0"
+          >
+            <div className="md:grid md:grid-cols-5 md:gap-8 items-start">
+              {/* Timeline indicator for mobile */}
+              <div className="absolute left-0 top-2 bottom-0 w-px bg-border md:hidden"></div>
+              <div className="absolute left-[-4px] top-2 w-2 h-2 rounded-full bg-primary md:hidden shadow-[0_0_8px_var(--color-primary)]"></div>
 
-          <div className="space-y-16">
-            {experiences.map((exp, index) => {
-              const isEven = index % 2 === 0;
-              return (
-                <motion.div
-                  key={exp.id}
-                  initial={{ opacity: 0, x: isEven ? -50 : 50 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ duration: 0.5 }}
-                  className="relative md:flex items-center justify-between group"
-                >
-                  {/* Company avatar — glass with gradient border */}
-                  <div
-                    className="absolute left-[-45px] md:left-1/2 w-10 h-10 -ml-[4px] md:-ml-0 rounded-full md:-translate-x-1/2 z-10 flex items-center justify-center font-bold transition-transform duration-300 group-hover:scale-110"
-                    role="img"
-                    aria-label={`${exp.company} logo`}
-                    style={{
-                      background: `linear-gradient(135deg, rgba(14,14,24,0.9) 0%, rgba(8,8,18,0.95) 100%)`,
-                      border: `2px solid ${exp.color}`,
-                      boxShadow: `0 0 16px ${exp.color}44, 0 4px 12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06)`,
-                      backdropFilter: "blur(12px)",
-                      WebkitBackdropFilter: "blur(12px)",
-                    }}
-                  >
-                    <span
-                      aria-hidden="true"
-                      className="text-sm font-bold"
-                      style={{ color: exp.color }}
+              <div className="md:col-span-1 mb-2 md:mb-0 md:text-right pt-1">
+                <span className="text-primary font-mono text-sm uppercase tracking-wider">{exp.period}</span>
+              </div>
+              
+              <div className="md:col-span-4 ember-glass p-6 md:p-8 rounded-xl relative group hover:border-primary/50 transition-all duration-300">
+                {/* Timeline connector for desktop */}
+                <div className="hidden md:block absolute -left-[4.5rem] top-8 w-8 h-px bg-border group-hover:bg-primary/50 transition-colors"></div>
+                <div className="hidden md:block absolute -left-[4.5rem] top-[1.875rem] w-3 h-3 rounded-full bg-background border-2 border-primary shadow-[0_0_8px_var(--color-primary)] group-hover:scale-125 transition-transform"></div>
+
+                <h3 className="text-2xl font-display font-bold text-foreground mb-1">
+                  {exp.role} <span className="text-primary">@</span> <span className="text-foreground/90">{exp.company}</span>
+                </h3>
+                
+                <p className="text-muted-foreground font-sans mt-4 leading-relaxed">
+                  {exp.description}
+                </p>
+                
+                <div className="flex flex-wrap gap-2 mt-6">
+                  {exp.tech.map(tech => (
+                    <span 
+                      key={tech}
+                      className="px-2 py-1 bg-primary/10 text-primary font-mono text-xs rounded border border-primary/20"
                     >
-                      {exp.initial}
+                      {tech}
                     </span>
-                  </div>
-
-                  <div className={`md:w-5/12 ${isEven ? "md:text-right md:pr-12" : "md:order-2 md:pl-12"}`}>
-                    {/* Glass card */}
-                    <div className="glass-card rounded-xl p-6 relative overflow-hidden group/card transition-colors duration-300 hover:border-primary/30">
-                      {/* Gradient top accent bar */}
-                      <div
-                        className="absolute top-0 left-0 right-0 h-[2px] rounded-t-xl"
-                        style={{
-                          background: `linear-gradient(to right, ${exp.color}cc, ${exp.color}44, transparent)`,
-                        }}
-                        aria-hidden="true"
-                      />
-
-                      {/* Corner glow */}
-                      <div
-                        className="absolute top-0 left-0 w-24 h-24 pointer-events-none"
-                        style={{
-                          background: `radial-gradient(ellipse at top left, ${exp.color}18 0%, transparent 70%)`,
-                        }}
-                        aria-hidden="true"
-                      />
-
-                      <h3 className="text-xl font-bold text-foreground relative z-10">
-                        {exp.role}{" "}
-                        <span style={{ color: exp.color }}>@ {exp.company}</span>
-                      </h3>
-                      <div className="font-mono text-sm text-muted-foreground mt-1 mb-4 relative z-10">
-                        {exp.date}
-                      </div>
-                      <p className="text-muted-foreground leading-relaxed text-left md:text-inherit relative z-10">
-                        {exp.description}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className={`hidden md:block md:w-5/12 ${isEven ? "md:order-2" : ""}`} />
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        ))}
       </div>
     </section>
   );
