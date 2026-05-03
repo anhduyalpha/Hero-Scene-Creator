@@ -41,7 +41,7 @@ export function SpeedDialFAB() {
 
   return (
     <div
-      className="fixed bottom-8 right-6 z-40 flex flex-col-reverse items-end gap-3"
+      className="fixed bottom-8 left-6 z-40 flex flex-col-reverse items-start gap-3"
       aria-label="Quick actions"
     >
       {/* Action items */}
@@ -134,13 +134,15 @@ export function SpeedDialFAB() {
                 "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.22) 50%, transparent 60%)",
             }}
             initial={{ x: "-100%" }}
-            animate={{ x: ["−100%", "200%"] }}
+            animate={{ x: ["-100%", "200%"] }}
             transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 1.5, ease: "easeInOut" }}
           />
         )}
 
         <motion.div
-          animate={{ rotate: open ? 45 : 0 }}
+          initial={false}
+          animate={{ rotate: open ? 45 : 0, scale: open ? 0.96 : 1 }}
+          exit={{ rotate: 0, scale: 1 }}
           transition={{ type: "spring", stiffness: 380, damping: 22 }}
         >
           {open ? <X className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
