@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { ArrowRight, Terminal, Github, Twitter, Linkedin, Code2, Zap, Star } from "lucide-react";
 import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 import { activeSocials } from "@/config/socials";
+import { EmberParticles } from "@/components/EmberParticles";
 
 const TITLES = [
   "Full-Stack Engineer",
@@ -132,8 +133,9 @@ export function Hero() {
   }, [displayText, isDeleting, titleIndex]);
 
   return (
-    <section id="hero" className="min-h-[90vh] flex flex-col justify-center container mx-auto px-6 py-20 pt-32">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+    <section id="hero" className="relative overflow-hidden min-h-[90vh] flex flex-col justify-center container mx-auto px-6 py-20 pt-32">
+      <EmberParticles />
+      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
 
         {/* Left: Text */}
         <motion.div
@@ -263,10 +265,10 @@ export function Hero() {
 
       {/* Stat cards */}
       <motion.div
+        className="relative z-10 grid grid-cols-2 md:grid-cols-4 gap-4 mt-20"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.5 }}
-        className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-20"
       >
         {[
           { label: "Experience", value: "5+ Yrs", icon: Zap },
