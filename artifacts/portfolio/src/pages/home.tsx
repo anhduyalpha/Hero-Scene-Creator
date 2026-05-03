@@ -4,6 +4,7 @@ import { About } from "@/components/sections/About";
 import { Marquee } from "@/components/sections/Marquee";
 import { Skills } from "@/components/sections/Skills";
 import { Projects } from "@/components/sections/Projects";
+import { PinnedRepos } from "@/components/sections/PinnedRepos";
 import { Experience } from "@/components/sections/Experience";
 import { Blog } from "@/components/sections/Blog";
 import { Contact } from "@/components/sections/Contact";
@@ -58,13 +59,19 @@ export default function Home() {
             <Projects />
           </ScrollFrame>
 
-          <SectionDivider label="experience" index="// 04" />
+          <SectionDivider label="open source" index="// 04" />
+
+          <ScrollFrame label="// OPEN_SOURCE" className="mx-6 lg:mx-16 rounded-xl">
+            <PinnedRepos />
+          </ScrollFrame>
+
+          <SectionDivider label="experience" index="// 05" />
 
           <ScrollFrame label="// EXPERIENCE" className="mx-6 lg:mx-16 rounded-xl">
             <Experience />
           </ScrollFrame>
 
-          <SectionDivider label="writing" index="// 05" />
+          <SectionDivider label="writing" index="// 06" />
 
           <ScrollFrame label="// BLOG" className="mx-6 lg:mx-16 rounded-xl">
             <Blog />
