@@ -1,5 +1,4 @@
 import { Hero } from "@/components/sections/Hero";
-import { HeroAnimation } from "@/components/sections/HeroAnimation";
 import { Bento } from "@/components/sections/Bento";
 import { About } from "@/components/sections/About";
 import { Marquee } from "@/components/sections/Marquee";
@@ -31,8 +30,6 @@ export default function Home() {
       >
         <Navbar />
         <main id="main-content">
-          <HeroAnimation />
-
           <Hero />
 
           <SectionDivider label="highlights" index="// 00" />
