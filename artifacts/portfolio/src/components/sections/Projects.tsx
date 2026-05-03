@@ -7,6 +7,12 @@ import {
   useMotionTemplate,
   useReducedMotion,
 } from "framer-motion";
+import {
+  SPRING_TILT,
+  SPRING_PARA,
+  SPRING_FADE,
+  useMagneticPull,
+} from "@/lib/motion";
 import { Github, ExternalLink, Code } from "lucide-react";
 
 /* ─── project data ─────────────────────────────────────── */
@@ -49,63 +55,10 @@ const projects = [
   },
 ];
 
-/* ─── spring configs ───────────────────────────────────── */
-const TILT_SPRING = { stiffness: 340, damping: 28, mass: 0.4 };
-const PARA_SPRING = { stiffness: 140, damping: 22, mass: 1.2 };
-const FADE_SPRING = { stiffness: 180, damping: 24 };
-/** Floaty, lazy spring for the magnetic pull layer */
-const MAG_SPRING  = { stiffness: 110, damping: 18, mass: 0.9 };
-
-/* ─────────────────────────────────────────────────────────
-   useMagneticPull
-   Attaches a single window mousemove listener. When the
-   cursor is within `threshold` px of the element's centre
-   it returns spring-animated x/y values that pull the
-   element toward the cursor by up to `maxPull` pixels.
-   The stable `anchorRef` never moves, so the rect is always
-   accurate and there is no feedback oscillation.
-───────────────────────────────────────────────────────── */
-function useMagneticPull(
-  anchorRef: React.RefObject<HTMLElement | null>,
-  disabled = false,
-  threshold = 220,
-  maxPull = 18,
-) {
-  const rawX = useMotionValue(0);
-  const rawY = useMotionValue(0);
-  const x = useSpring(rawX, MAG_SPRING);
-  const y = useSpring(rawY, MAG_SPRING);
-
-  useEffect(() => {
-    if (disabled) return;
-
-    const onMove = (e: MouseEvent) => {
-      const el = anchorRef.current;
-      if (!el) return;
-      const r  = el.getBoundingClientRect();
-      const cx = r.left + r.width  / 2;
-      const cy = r.top  + r.height / 2;
-      const dx = e.clientX - cx;
-      const dy = e.clientY - cy;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-
-      if (dist < threshold) {
-        /* pull strength falls off linearly with distance */
-        const force = (1 - dist / threshold) * maxPull;
-        rawX.set((dx / dist) * force);
-        rawY.set((dy / dist) * force);
-      } else {
-        rawX.set(0);
-        rawY.set(0);
-      }
-    };
-
-    window.addEventListener("mousemove", onMove, { passive: true });
-    return () => window.removeEventListener("mousemove", onMove);
-  }, [anchorRef, disabled, threshold, maxPull, rawX, rawY]);
-
-  return { x, y };
-}
+/* spring aliases kept for local readability */
+const TILT_SPRING = SPRING_TILT;
+const PARA_SPRING = SPRING_PARA;
+const FADE_SPRING = SPRING_FADE;
 
 /* ─── 3D hover image ───────────────────────────────────── */
 function ProjectImage({ src, alt }: { src: string; alt: string }) {

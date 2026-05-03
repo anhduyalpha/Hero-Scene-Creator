@@ -1,5 +1,6 @@
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import { subscribeMouseMove, SPRING_NAV } from "@/lib/motion";
 
 const SECTIONS = [
   { id: "about",       label: "About" },
@@ -16,23 +17,6 @@ const SECTIONS = [
 const MAG_RANGE = 72;
 const MAG_STRENGTH = 10;
 
-// Single shared mouse position — avoids N event listeners
-type MouseCB = (x: number, y: number) => void;
-const _cbs = new Set<MouseCB>();
-let _attached = false;
-function subscribeMouseMove(cb: MouseCB) {
-  if (!_attached) {
-    _attached = true;
-    window.addEventListener(
-      "mousemove",
-      (e) => _cbs.forEach((fn) => fn(e.clientX, e.clientY)),
-      { passive: true }
-    );
-  }
-  _cbs.add(cb);
-  return () => _cbs.delete(cb);
-}
-
 function NavDot({
   id,
   label,
@@ -46,8 +30,8 @@ function NavDot({
   const cachedRect = useRef<DOMRect | null>(null);
   const rawX = useMotionValue(0);
   const rawY = useMotionValue(0);
-  const x = useSpring(rawX, { stiffness: 300, damping: 26, mass: 0.5 });
-  const y = useSpring(rawY, { stiffness: 300, damping: 26, mass: 0.5 });
+  const x = useSpring(rawX, SPRING_NAV);
+  const y = useSpring(rawY, SPRING_NAV);
   const [hovered, setHovered] = useState(false);
 
   useEffect(() => {

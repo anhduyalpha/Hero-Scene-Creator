@@ -1,20 +1,19 @@
 import { useEffect } from "react";
 import { useMotionValue, useSpring, motion } from "framer-motion";
+import { SPRING_SPOTLIGHT, subscribeMouseMove } from "@/lib/motion";
 
 export function AmbientSpotlight() {
   const rawX = useMotionValue(-9999);
   const rawY = useMotionValue(-9999);
 
-  const x = useSpring(rawX, { stiffness: 130, damping: 28, mass: 0.8 });
-  const y = useSpring(rawY, { stiffness: 130, damping: 28, mass: 0.8 });
+  const x = useSpring(rawX, SPRING_SPOTLIGHT);
+  const y = useSpring(rawY, SPRING_SPOTLIGHT);
 
   useEffect(() => {
-    const onMove = (e: MouseEvent) => {
-      rawX.set(e.clientX);
-      rawY.set(e.clientY);
-    };
-    window.addEventListener("mousemove", onMove, { passive: true });
-    return () => window.removeEventListener("mousemove", onMove);
+    return subscribeMouseMove((mx, my) => {
+      rawX.set(mx);
+      rawY.set(my);
+    });
   }, [rawX, rawY]);
 
   return (
