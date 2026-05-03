@@ -17,6 +17,10 @@ import { SectionDivider, ScrollProgress } from "@/components/SectionDivider";
 import { ScrollFrame, DataStream } from "@/components/ScrollFrame";
 import { MagneticNavDots } from "@/components/MagneticNavDots";
 import { NowCodingBadge } from "@/components/NowCodingBadge";
+import { AmbientSpotlight } from "@/components/AmbientSpotlight";
+import { KonamiEgg } from "@/components/KonamiEgg";
+import { CommandPalette } from "@/components/CommandPalette";
+import { TechOrbit } from "@/components/TechOrbit";
 
 export default function Home() {
   return (
@@ -28,8 +32,11 @@ export default function Home() {
       <ScrollProgress />
       <DataStream side="left" />
       <DataStream side="right" />
+      <AmbientSpotlight />
       <MagneticNavDots />
       <NowCodingBadge />
+      <KonamiEgg />
+      <CommandPalette />
 
       <div
         className="relative min-h-screen text-foreground selection:bg-primary/30 selection:text-primary"
@@ -56,6 +63,7 @@ export default function Home() {
           <SectionDivider label="skills" index="// 02" />
 
           <ScrollFrame label="// ARSENAL" className="mx-6 lg:mx-16 rounded-xl">
+            <TechOrbit />
             <Skills />
           </ScrollFrame>
 
