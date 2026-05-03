@@ -2,6 +2,75 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Terminal as TermIcon } from "lucide-react";
 
+/* ── Matrix rain canvas ─────────────────────────────────── */
+const CHARS = "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEF<>{}[]()";
+
+function MatrixCanvas({ onEnd }: { onEnd: () => void }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const W = canvas.width = canvas.offsetWidth;
+    const H = canvas.height = canvas.offsetHeight;
+    const FONT_SIZE = 13;
+    const cols = Math.floor(W / FONT_SIZE);
+    const drops = Array.from({ length: cols }, () => Math.random() * -H);
+
+    ctx.fillStyle = "#000";
+    ctx.fillRect(0, 0, W, H);
+
+    let raf: number;
+    let frame = 0;
+
+    const draw = () => {
+      frame++;
+      if (frame % 2 === 0) { // ~30fps
+        ctx.fillStyle = "rgba(0,0,0,0.055)";
+        ctx.fillRect(0, 0, W, H);
+        ctx.font = `bold ${FONT_SIZE}px monospace`;
+
+        for (let i = 0; i < drops.length; i++) {
+          const char = CHARS[Math.floor(Math.random() * CHARS.length)];
+          const y = drops[i] * FONT_SIZE;
+          // Leading char is bright white-green
+          ctx.fillStyle = `rgba(200,255,200,${Math.random() > 0.95 ? 1 : 0.5})`;
+          ctx.fillText(char, i * FONT_SIZE, y);
+          // Trailing glow
+          if (drops[i] > 1) {
+            const prev = CHARS[Math.floor(Math.random() * CHARS.length)];
+            ctx.fillStyle = "rgba(0,255,70,0.85)";
+            ctx.fillText(prev, i * FONT_SIZE, y - FONT_SIZE);
+          }
+          drops[i]++;
+          if (drops[i] * FONT_SIZE > H && Math.random() > 0.975) drops[i] = 0;
+        }
+      }
+      raf = requestAnimationFrame(draw);
+    };
+
+    raf = requestAnimationFrame(draw);
+    const timer = setTimeout(() => { cancelAnimationFrame(raf); onEnd(); }, 6200);
+
+    return () => { cancelAnimationFrame(raf); clearTimeout(timer); };
+  }, [onEnd]);
+
+  return (
+    <motion.canvas
+      ref={canvasRef}
+      className="absolute inset-0 w-full h-full rounded-b-2xl"
+      style={{ zIndex: 10 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.4 }}
+    />
+  );
+}
+
 /* ── command registry ───────────────────────────────────── */
 type Line = { text: string; color?: string };
 type CmdResult = Line[] | "clear";
@@ -16,6 +85,7 @@ const COMMANDS: Partial<Record<string, () => CmdResult>> = {
     { text: "  ls projects      — Featured projects" },
     { text: "  contact          — Open contact form" },
     { text: "  date             — Current time (UTC+7)" },
+    { text: "  matrix           — 🟢 Enter the Matrix" },
     { text: "  clear            — Clear terminal" },
     { text: "  sudo hire anhduy — 👀" },
   ],
@@ -57,8 +127,7 @@ const COMMANDS: Partial<Record<string, () => CmdResult>> = {
   ],
   contact: () => {
     setTimeout(() => {
-      const el = document.getElementById("contact");
-      el?.scrollIntoView({ behavior: "smooth" });
+      document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
     }, 600);
     return [
       { text: "Navigating to contact section...", color: "#f59e0b" },
@@ -66,7 +135,9 @@ const COMMANDS: Partial<Record<string, () => CmdResult>> = {
     ];
   },
   date: () => {
-    const now = new Date().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh", dateStyle: "full", timeStyle: "long" });
+    const now = new Date().toLocaleString("en-US", {
+      timeZone: "Asia/Ho_Chi_Minh", dateStyle: "full", timeStyle: "long",
+    });
     return [{ text: now }];
   },
   clear: () => "clear",
@@ -110,6 +181,7 @@ export function Terminal() {
   const [cmdHistory, setCmdHistory] = useState<string[]>([]);
   const [histIdx, setHistIdx] = useState(-1);
   const [blink, setBlink] = useState(true);
+  const [isMatrix, setIsMatrix] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -134,6 +206,24 @@ export function Terminal() {
       type: "input",
       lines: [{ text: `> ${raw.trim()}`, color: "#f59e0b" }],
     };
+
+    // Matrix special case
+    if (cmd === "matrix") {
+      setHistory((h) => [
+        ...h,
+        inputEntry,
+        {
+          id: COUNTER++,
+          type: "output",
+          lines: [
+            { text: "Entering the Matrix...", color: "#22c55e" },
+            { text: "Wake up, AlphaD. The Matrix has you.", color: "rgba(0,255,70,0.5)" },
+          ],
+        },
+      ]);
+      setTimeout(() => setIsMatrix(true), 400);
+      return;
+    }
 
     const handler = COMMANDS[cmd];
     if (cmd === "clear") {
@@ -210,7 +300,7 @@ export function Terminal() {
       </motion.div>
 
       <motion.div
-        className="max-w-3xl mx-auto ember-glass rounded-2xl overflow-hidden cursor-text"
+        className="max-w-3xl mx-auto ember-glass rounded-2xl overflow-hidden cursor-text relative"
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
@@ -220,7 +310,7 @@ export function Terminal() {
       >
         {/* title bar */}
         <div
-          className="flex items-center gap-2 px-4 py-2.5 border-b"
+          className="flex items-center gap-2 px-4 py-2.5 border-b relative z-20"
           style={{ background: "rgba(0,0,0,0.4)", borderColor: "rgba(245,158,11,0.12)" }}
         >
           <span className="w-3 h-3 rounded-full" style={{ background: "#dc2626" }} />
@@ -228,45 +318,70 @@ export function Terminal() {
           <span className="w-3 h-3 rounded-full" style={{ background: "#22c55e" }} />
           <div className="flex items-center gap-1.5 ml-3 text-muted-foreground">
             <TermIcon className="w-3.5 h-3.5" />
-            <span className="font-mono text-xs">alphaD — bash</span>
+            <span className="font-mono text-xs">
+              alphaD — {isMatrix ? "MATRIX MODE 🟢" : "bash"}
+            </span>
           </div>
+          {isMatrix && (
+            <motion.button
+              className="ml-auto font-mono text-[10px] px-2 py-0.5 rounded"
+              style={{ background: "rgba(0,255,70,0.12)", color: "#22c55e", border: "1px solid rgba(0,255,70,0.3)" }}
+              onClick={(e) => { e.stopPropagation(); setIsMatrix(false); }}
+              whileHover={{ background: "rgba(0,255,70,0.2)" }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+            >
+              exit matrix
+            </motion.button>
+          )}
         </div>
 
-        {/* output */}
-        <div className="px-5 py-4 min-h-[280px] max-h-[420px] overflow-y-auto font-mono text-sm leading-relaxed">
-          <AnimatePresence initial={false}>
-            {history.map((entry) => (
-              <motion.div
-                key={entry.id}
-                initial={{ opacity: 0, y: 4 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.18 }}
-                className="mb-1"
-              >
-                {entry.lines.map((line, li) => (
-                  <div
-                    key={li}
-                    style={{ color: line.color ?? "rgba(254,243,199,0.75)", whiteSpace: "pre-wrap" }}
-                  >
-                    {line.text}
-                  </div>
-                ))}
-              </motion.div>
-            ))}
-          </AnimatePresence>
-          <div ref={bottomRef} />
+        {/* output area — relatively positioned so canvas can overlay */}
+        <div className="relative" style={{ minHeight: 280 }}>
+          <div className="px-5 py-4 min-h-[280px] max-h-[420px] overflow-y-auto font-mono text-sm leading-relaxed">
+            <AnimatePresence initial={false}>
+              {history.map((entry) => (
+                <motion.div
+                  key={entry.id}
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.18 }}
+                  className="mb-1"
+                >
+                  {entry.lines.map((line, li) => (
+                    <div
+                      key={li}
+                      style={{ color: line.color ?? "rgba(254,243,199,0.75)", whiteSpace: "pre-wrap" }}
+                    >
+                      {line.text}
+                    </div>
+                  ))}
+                </motion.div>
+              ))}
+            </AnimatePresence>
+            <div ref={bottomRef} />
 
-          {/* prompt row */}
-          <div className="flex items-center gap-1.5 mt-1">
-            <span style={{ color: "#f59e0b" }}>›</span>
-            <span style={{ color: "rgba(254,243,199,0.85)" }}>{input}</span>
-            <motion.span
-              className="inline-block w-[7px] h-[14px] rounded-sm ml-px"
-              style={{ background: "#f59e0b" }}
-              animate={{ opacity: blink ? 1 : 0 }}
-              transition={{ duration: 0 }}
-            />
+            {/* prompt row */}
+            {!isMatrix && (
+              <div className="flex items-center gap-1.5 mt-1">
+                <span style={{ color: "#f59e0b" }}>›</span>
+                <span style={{ color: "rgba(254,243,199,0.85)" }}>{input}</span>
+                <motion.span
+                  className="inline-block w-[7px] h-[14px] rounded-sm ml-px"
+                  style={{ background: "#f59e0b" }}
+                  animate={{ opacity: blink ? 1 : 0 }}
+                  transition={{ duration: 0 }}
+                />
+              </div>
+            )}
           </div>
+
+          {/* Matrix canvas overlay */}
+          <AnimatePresence>
+            {isMatrix && (
+              <MatrixCanvas onEnd={() => setIsMatrix(false)} />
+            )}
+          </AnimatePresence>
         </div>
 
         {/* hidden real input */}

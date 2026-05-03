@@ -21,6 +21,9 @@ import { AmbientSpotlight } from "@/components/AmbientSpotlight";
 import { KonamiEgg } from "@/components/KonamiEgg";
 import { CommandPalette } from "@/components/CommandPalette";
 import { TechOrbit } from "@/components/TechOrbit";
+import { SkillRadar } from "@/components/SkillRadar";
+import { FilmGrain } from "@/components/FilmGrain";
+import { SpeedDialFAB } from "@/components/SpeedDialFAB";
 
 export default function Home() {
   return (
@@ -32,11 +35,13 @@ export default function Home() {
       <ScrollProgress />
       <DataStream side="left" />
       <DataStream side="right" />
+      <FilmGrain />
       <AmbientSpotlight />
       <MagneticNavDots />
       <NowCodingBadge />
       <KonamiEgg />
       <CommandPalette />
+      <SpeedDialFAB />
 
       <div
         className="relative min-h-screen text-foreground selection:bg-primary/30 selection:text-primary"
@@ -63,7 +68,10 @@ export default function Home() {
           <SectionDivider label="skills" index="// 02" />
 
           <ScrollFrame label="// ARSENAL" className="mx-6 lg:mx-16 rounded-xl">
-            <TechOrbit />
+            <div className="flex flex-col xl:flex-row items-center xl:items-start gap-4 pt-4">
+              <div className="flex-shrink-0"><TechOrbit /></div>
+              <div className="flex-shrink-0 xl:mt-4"><SkillRadar /></div>
+            </div>
             <Skills />
           </ScrollFrame>
 
