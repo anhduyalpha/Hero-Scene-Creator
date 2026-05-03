@@ -26,7 +26,6 @@ import { FilmGrain } from "@/components/FilmGrain";
 import { SpeedDialFAB } from "@/components/SpeedDialFAB";
 import { CinematicIntro } from "@/components/CinematicIntro";
 import { CareerTimeline } from "@/components/CareerTimeline";
-import { WorldClock } from "@/components/WorldClock";
 import { ClickSparkBurst } from "@/components/ClickSparkBurst";
 
 export default function Home() {
@@ -45,7 +44,6 @@ export default function Home() {
       <AmbientSpotlight />
       <MagneticNavDots />
       <NowCodingBadge />
-      <WorldClock />
       <KonamiEgg />
       <CommandPalette />
       <SpeedDialFAB />
