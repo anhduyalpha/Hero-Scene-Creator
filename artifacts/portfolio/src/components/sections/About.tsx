@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 
 const paragraphs = [
   "I view software engineering the same way a blacksmith views forging metal. It requires immense heat, heavy strikes, and meticulous attention to detail. Since writing my first lines of code in a dimly lit dorm room, I've been fascinated by the process of turning raw logic into systems that withstand the test of time and scale.",
-  "Currently, I'm a Senior Full-Stack Engineer building high-throughput infrastructure. I thrive in the midnight hours, where the noise of the day fades and deep focus takes over. Whether it's optimizing a complex PostgreSQL query, architecting a distributed Redis queue, or refining the micro-interactions of a React component, I approach every layer of the stack with the same level of craftsmanship.",
+  "Currently, I'm a Software Engineer building high-throughput infrastructure. I thrive in the midnight hours, where the noise of the day fades and deep focus takes over. Whether it's optimizing a complex PostgreSQL query, architecting a distributed Redis queue, or refining the micro-interactions of a React component, I approach every layer of the stack with the same level of craftsmanship.",
   "When I'm not striking the anvil of my mechanical keyboard, I'm contributing to open-source tooling, mentoring junior developers, and studying system design patterns.",
 ];
 

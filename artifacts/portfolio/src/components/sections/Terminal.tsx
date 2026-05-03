@@ -21,7 +21,7 @@ const COMMANDS: Partial<Record<string, () => CmdResult>> = {
   ],
   whoami: () => [
     { text: "AlphaD (Anh Duy)", color: "#f59e0b" },
-    { text: "Staff Engineer · Ho Chi Minh City, Vietnam · UTC+7" },
+    { text: "Software Engineer · Ho Chi Minh City, Vietnam · UTC+7" },
     { text: "5+ years forging distributed systems at scale." },
     { text: "Currently: high-throughput infrastructure @ Nexus Systems." },
     { text: "Open to remote opportunities worldwide.", color: "rgba(245,158,11,0.6)" },

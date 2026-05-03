@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 
 const items = [
-  "Full Stack Engineer",
+  "Software Engineer",
   "Distributed Systems",
   "Open Source Creator",
   "TypeScript",

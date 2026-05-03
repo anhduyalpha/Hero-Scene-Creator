@@ -5,7 +5,7 @@ import { activeSocials } from "@/config/socials";
 import { EmberParticles } from "@/components/EmberParticles";
 
 const TITLES = [
-  "Full-Stack Engineer",
+  "Software Engineer",
   "System Architect",
   "Open Source Creator",
   "UI/UX Designer",
