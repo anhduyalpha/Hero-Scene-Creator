@@ -132,7 +132,7 @@ export function Hero() {
   }, [displayText, isDeleting, titleIndex]);
 
   return (
-    <section id="hero" className="min-h-[90vh] flex flex-col justify-center container mx-auto px-6 py-20 pt-32">
+    <section id="intro" className="min-h-[90vh] flex flex-col justify-center container mx-auto px-6 py-20 pt-32">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
 
         {/* Left: Text */}
