@@ -194,6 +194,75 @@ router.get("/github/pinned", async (req, res) => {
   }
 });
 
+router.get("/github/latest-commit", async (req, res) => {
+  const token = process.env["GITHUB_TOKEN"];
+  if (!token) {
+    res.status(503).json({ error: "GitHub token not configured" });
+    return;
+  }
+
+  const username = "anhduyalpha";
+  const cacheKey = `latest-commit:${username}`;
+  const now = Date.now();
+  const FIVE_MIN = 5 * 60 * 1000;
+
+  const cached = cache.get(cacheKey);
+  if (cached && cached.expiresAt > now) {
+    res.json(cached.data);
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      `https://api.github.com/users/${username}/events?per_page=20`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "User-Agent": "AlphaD-Portfolio/1.0",
+          Accept: "application/vnd.github+json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      req.log.error({ status: response.status }, "GitHub events API error");
+      res.status(502).json({ error: "GitHub API unavailable" });
+      return;
+    }
+
+    const events = (await response.json()) as {
+      type: string;
+      repo: { name: string };
+      payload: { commits?: { message: string; sha?: string }[] };
+      created_at: string;
+    }[];
+
+    const push = events.find(
+      (e) => e.type === "PushEvent" && e.payload.commits?.length
+    );
+
+    if (!push) {
+      res.json(null);
+      return;
+    }
+
+    const commit = push.payload.commits![push.payload.commits!.length - 1];
+    const repoShort = push.repo.name.replace(`${username}/`, "");
+    const result = {
+      message: commit.message.split("\n")[0].slice(0, 80),
+      repo: repoShort,
+      url: `https://github.com/${push.repo.name}`,
+      timestamp: push.created_at,
+    };
+
+    cache.set(cacheKey, { data: result, expiresAt: now + FIVE_MIN });
+    res.json(result);
+  } catch (err) {
+    req.log.error({ err }, "Failed to fetch GitHub events");
+    res.status(500).json({ error: "Internal error" });
+  }
+});
+
 router.get("/github/contributions", async (req, res) => {
   const token = process.env["GITHUB_TOKEN"];
   if (!token) {
