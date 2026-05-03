@@ -5,8 +5,8 @@ export function AmbientSpotlight() {
   const rawX = useMotionValue(-9999);
   const rawY = useMotionValue(-9999);
 
-  const x = useSpring(rawX, { stiffness: 60, damping: 20, mass: 1.2 });
-  const y = useSpring(rawY, { stiffness: 60, damping: 20, mass: 1.2 });
+  const x = useSpring(rawX, { stiffness: 130, damping: 28, mass: 0.8 });
+  const y = useSpring(rawY, { stiffness: 130, damping: 28, mass: 0.8 });
 
   useEffect(() => {
     const onMove = (e: MouseEvent) => {

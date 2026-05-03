@@ -16,23 +16,56 @@ const SECTIONS = [
 const MAG_RANGE = 72;
 const MAG_STRENGTH = 10;
 
-function NavDot({ id, label, isActive }: { id: string; label: string; isActive: boolean }) {
+// Single shared mouse position — avoids N event listeners
+type MouseCB = (x: number, y: number) => void;
+const _cbs = new Set<MouseCB>();
+let _attached = false;
+function subscribeMouseMove(cb: MouseCB) {
+  if (!_attached) {
+    _attached = true;
+    window.addEventListener(
+      "mousemove",
+      (e) => _cbs.forEach((fn) => fn(e.clientX, e.clientY)),
+      { passive: true }
+    );
+  }
+  _cbs.add(cb);
+  return () => _cbs.delete(cb);
+}
+
+function NavDot({
+  id,
+  label,
+  isActive,
+}: {
+  id: string;
+  label: string;
+  isActive: boolean;
+}) {
   const dotRef = useRef<HTMLAnchorElement>(null);
+  const cachedRect = useRef<DOMRect | null>(null);
   const rawX = useMotionValue(0);
   const rawY = useMotionValue(0);
-  const x = useSpring(rawX, { stiffness: 260, damping: 24, mass: 0.6 });
-  const y = useSpring(rawY, { stiffness: 260, damping: 24, mass: 0.6 });
+  const x = useSpring(rawX, { stiffness: 300, damping: 26, mass: 0.5 });
+  const y = useSpring(rawY, { stiffness: 300, damping: 26, mass: 0.5 });
   const [hovered, setHovered] = useState(false);
 
   useEffect(() => {
-    const onMove = (e: MouseEvent) => {
-      const el = dotRef.current;
-      if (!el) return;
-      const r = el.getBoundingClientRect();
+    // Cache rect; only re-measure on resize (not on every mousemove)
+    const measure = () => {
+      cachedRect.current = dotRef.current?.getBoundingClientRect() ?? null;
+    };
+    measure();
+    window.addEventListener("resize", measure, { passive: true });
+    window.addEventListener("scroll", measure, { passive: true });
+
+    const unsub = subscribeMouseMove((mx, my) => {
+      const r = cachedRect.current;
+      if (!r) return;
       const cx = r.left + r.width / 2;
       const cy = r.top + r.height / 2;
-      const dx = e.clientX - cx;
-      const dy = e.clientY - cy;
+      const dx = mx - cx;
+      const dy = my - cy;
       const dist = Math.sqrt(dx * dx + dy * dy);
       if (dist < MAG_RANGE) {
         const force = (1 - dist / MAG_RANGE) * MAG_STRENGTH;
@@ -42,9 +75,13 @@ function NavDot({ id, label, isActive }: { id: string; label: string; isActive: 
         rawX.set(0);
         rawY.set(0);
       }
+    });
+
+    return () => {
+      unsub();
+      window.removeEventListener("resize", measure);
+      window.removeEventListener("scroll", measure);
     };
-    window.addEventListener("mousemove", onMove, { passive: true });
-    return () => window.removeEventListener("mousemove", onMove);
   }, [rawX, rawY]);
 
   return (

@@ -1,8 +1,9 @@
 import { motion, useReducedMotion } from "framer-motion";
 
-const PARTICLES = Array.from({ length: 22 }, (_, i) => ({
+// Reduced from 22 → 12 particles; fewer compositor layers, same visual effect
+const PARTICLES = Array.from({ length: 12 }, (_, i) => ({
   id: i,
-  left: `${2 + ((i * 97 + 13) % 96)}%`,
+  left: `${3 + ((i * 173 + 17) % 94)}%`,
   size: 2 + (i % 3),
   color: i % 3 === 0 ? "#dc2626" : i % 3 === 1 ? "#f59e0b" : "#fbbf24",
   glow:
@@ -11,11 +12,11 @@ const PARTICLES = Array.from({ length: 22 }, (_, i) => ({
       : i % 3 === 1
         ? "rgba(245,158,11,0.65)"
         : "rgba(251,191,36,0.55)",
-  duration: 7 + (i % 7),
-  delay: -(i * 0.52),
+  duration: 8 + (i % 6),
+  delay: -(i * 0.9),
   maxOpacity: 0.22 + (i % 5) * 0.065,
-  xDrift: ((i * 19 + 7) % 56) - 28,
-  yDistance: 380 + (i % 5) * 110,
+  xDrift: ((i * 31 + 11) % 52) - 26,
+  yDistance: 400 + (i % 5) * 100,
 }));
 
 export function EmberParticles() {
@@ -43,7 +44,7 @@ export function EmberParticles() {
           animate={{
             y: [0, -p.yDistance],
             x: [0, p.xDrift],
-            opacity: [0, p.maxOpacity, p.maxOpacity * 0.65, 0],
+            opacity: [0, p.maxOpacity, p.maxOpacity * 0.6, 0],
           }}
           transition={{
             duration: p.duration,

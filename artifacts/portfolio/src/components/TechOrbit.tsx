@@ -58,7 +58,6 @@ export function TechOrbit() {
         const scale = 0.6 + depth * 0.5;
         el.style.transform = `translate3d(calc(-50% + ${x.toFixed(1)}px), calc(-50% + ${y.toFixed(1)}px), ${z.toFixed(1)}px) scale(${scale.toFixed(3)})`;
         el.style.opacity = opacity.toFixed(3);
-        el.style.zIndex = String(Math.round(depth * 10));
       });
 
       rafRef.current = requestAnimationFrame(frame);
