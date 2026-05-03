@@ -9,14 +9,6 @@ export function Footer() {
         className="absolute inset-x-0 top-0 h-px"
         style={{ background: "linear-gradient(to right, transparent, rgba(245,158,11,0.22), transparent)" }}
       />
-      <div
-        className="absolute inset-0 opacity-30"
-        style={{
-          background:
-            "radial-gradient(circle at top, rgba(245,158,11,0.08), transparent 42%), radial-gradient(circle at bottom right, rgba(220,38,38,0.05), transparent 30%)",
-        }}
-      />
-
       <div className="container relative mx-auto grid max-w-6xl grid-cols-1 gap-8 px-6 md:grid-cols-[1fr_0.95fr_1fr] md:items-start">
         <div className="rounded-[24px] border border-[rgba(245,158,11,0.08)] bg-[rgba(6,4,2,0.28)] p-5 backdrop-blur-md">
           <div className="flex flex-col items-start gap-3">
