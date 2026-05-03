@@ -24,6 +24,10 @@ import { TechOrbit } from "@/components/TechOrbit";
 import { SkillRadar } from "@/components/SkillRadar";
 import { FilmGrain } from "@/components/FilmGrain";
 import { SpeedDialFAB } from "@/components/SpeedDialFAB";
+import { CinematicIntro } from "@/components/CinematicIntro";
+import { CareerTimeline } from "@/components/CareerTimeline";
+import { WorldClock } from "@/components/WorldClock";
+import { ClickSparkBurst } from "@/components/ClickSparkBurst";
 
 export default function Home() {
   return (
@@ -35,10 +39,13 @@ export default function Home() {
       <ScrollProgress />
       <DataStream side="left" />
       <DataStream side="right" />
+      <CinematicIntro />
+      <ClickSparkBurst />
       <FilmGrain />
       <AmbientSpotlight />
       <MagneticNavDots />
       <NowCodingBadge />
+      <WorldClock />
       <KonamiEgg />
       <CommandPalette />
       <SpeedDialFAB />
@@ -96,6 +103,7 @@ export default function Home() {
           <SectionDivider label="experience" index="// 05" />
 
           <ScrollFrame label="// EXPERIENCE" className="mx-6 lg:mx-16 rounded-xl">
+            <CareerTimeline />
             <Experience />
           </ScrollFrame>
 
