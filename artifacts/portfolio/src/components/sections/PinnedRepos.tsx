@@ -223,7 +223,7 @@ export function PinnedRepos() {
             viewport={{ once: true }}
             transition={{ duration: 0.4 }}
           >
-            05.
+            04.
           </motion.span>
           <motion.span>
             {"Open Source".split("").map((char, i) => (

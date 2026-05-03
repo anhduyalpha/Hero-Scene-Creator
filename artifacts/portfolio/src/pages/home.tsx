@@ -77,7 +77,7 @@ export default function Home() {
             <Blog />
           </ScrollFrame>
 
-          <SectionDivider label="contact" index="// 06" />
+          <SectionDivider label="contact" index="// 07" />
 
           <ScrollFrame label="// CONTACT" className="mx-6 lg:mx-16 rounded-xl">
             <Contact />

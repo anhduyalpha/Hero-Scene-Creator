@@ -108,7 +108,7 @@ export function Experience() {
             viewport={{ once: true }}
             transition={{ duration: 0.4 }}
           >
-            03.
+            05.
           </motion.span>
           <CharStagger text={HEADING} />
         </h2>

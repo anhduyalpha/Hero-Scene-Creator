@@ -447,7 +447,7 @@ export function Projects() {
           style={{ fontFamily: "'Space Grotesk', sans-serif" }}
         >
           <span className="text-secondary font-mono text-xl font-normal">
-            04.
+            03.
           </span>
           Featured Work
         </h2>

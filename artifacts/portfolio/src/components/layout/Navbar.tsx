@@ -11,11 +11,12 @@ export function Navbar() {
   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
 
   const links = [
-    { name: "About",      href: "#about" },
-    { name: "Projects",   href: "#projects" },
-    { name: "Experience", href: "#experience" },
-    { name: "Contact",    href: "#contact" },
-    { name: "Blog",       href: "#blog" },
+    { name: "About",       href: "#about" },
+    { name: "Projects",    href: "#projects" },
+    { name: "Open Source", href: "#open-source" },
+    { name: "Experience",  href: "#experience" },
+    { name: "Contact",     href: "#contact" },
+    { name: "Blog",        href: "#blog" },
   ];
 
   useEffect(() => {
